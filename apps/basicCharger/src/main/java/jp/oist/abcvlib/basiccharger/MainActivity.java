@@ -74,7 +74,7 @@ public class MainActivity extends AbcvlibActivity implements SerialReadyListener
     private final String TAG = getClass().getName();
     private float speedL = 0.0f;
     private float speedR = 0.0f;
-    private float forwardBias = 0.3f; // for moving forward while centering
+    private float forwardBias = 0.5f; // for moving forward while centering
     private float p_controller = 0.2f;
     private float leftWheelCompensation = 1.1f;
     private PublisherManager publisherManager;
@@ -290,8 +290,8 @@ public class MainActivity extends AbcvlibActivity implements SerialReadyListener
     private void searching(){
 //        action = Action.SEARCHING;
         Log.v("PUCK", "Action.SEARCHING");
-        speedL = 0.3f;
-        speedR = -0.3f;
+        speedL = 0.5f;
+        speedR = -0.5f;
     }
 
     private void approach(float errorX, float errorY){
