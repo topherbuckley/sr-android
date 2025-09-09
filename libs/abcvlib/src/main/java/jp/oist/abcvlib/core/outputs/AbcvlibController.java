@@ -17,8 +17,18 @@ public abstract class AbcvlibController implements Runnable{
     private ScheduledExecutorServiceWithException executor;
     private final String TAG = getClass().getName();
     private boolean isRunning = false;
+    private Outputs outputs;
 
-    public AbcvlibController(){}
+    public AbcvlibController(Outputs outputs){
+        if (outputs == null){
+            ErrorHandler.eLog(TAG, "Outputs object cannot be null.", new Exception(), true);
+        }
+        this.outputs = outputs;
+    }
+
+    // Deprecated default constructor. You must provide an Outputs object
+    @Deprecated
+    public AbcvlibController(){};
 
     public AbcvlibController setName(String name) {
         this.name = name;
@@ -51,16 +61,11 @@ public abstract class AbcvlibController implements Runnable{
     }
 
     public void startController(){
-        executor = new ScheduledExecutorServiceWithException(
-                threadCount, new ProcessPriorityThreadFactory(threadPriority,
-                name));
-        executor.scheduleWithFixedDelay(this, initDelay, timeStep, timeUnit);
         isRunning = true;
     }
 
     public void stopController(){
         setOutput(0,0);
-        executor.shutdown();
         isRunning = false;
     }
 
@@ -70,9 +75,20 @@ public abstract class AbcvlibController implements Runnable{
         return output;
     }
 
+    synchronized float getLeftOutput(){
+        return output.left;
+    }
+
+    synchronized float getRightOutput(){
+        return output.right;
+    }
+
     protected synchronized void setOutput(float left, float right){
         output.left = left;
         output.right = right;
+        if (isRunning){
+            outputs.setWheelOutput(left, right, false, false);
+        }
     }
 
     @Override
