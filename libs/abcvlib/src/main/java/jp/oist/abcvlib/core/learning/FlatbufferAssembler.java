@@ -1,6 +1,6 @@
 package jp.oist.abcvlib.core.learning;
 
-import android.util.Log;
+import jp.oist.abcvlib.util.Logger;
 
 import com.google.flatbuffers.FlatBufferBuilder;
 
@@ -74,7 +74,7 @@ public class FlatbufferAssembler {
 
     public void startEpisode(){
         builder = new FlatBufferBuilder(1024);
-        Log.v("flatbuff", "starting New Episode");
+        Logger.v("flatbuff", "starting New Episode");
     }
 
     public void addTimeStep(int timestep) throws ExecutionException, InterruptedException {
@@ -111,7 +111,7 @@ public class FlatbufferAssembler {
     private int addWheelData(TimeStepDataBuffer.TimeStepData timeStepData){
         TimeStepDataBuffer.TimeStepData.WheelData.IndividualWheelData leftData =
                 timeStepData.getWheelData().getLeft();
-        Log.v("flatbuff", "STEP wheelCount TimeStamps Length: " +
+        Logger.v("flatbuff", "STEP wheelCount TimeStamps Length: " +
                 leftData.getTimeStamps().length);
         int timeStampsLeft = IndividualWheelData.createTimestampsVector(builder,
                 leftData.getTimeStamps());
@@ -130,7 +130,7 @@ public class FlatbufferAssembler {
 
         TimeStepDataBuffer.TimeStepData.WheelData.IndividualWheelData rightData =
                 timeStepData.getWheelData().getRight();
-        Log.v("flatbuff", "STEP wheelCount TimeStamps Length: " +
+        Logger.v("flatbuff", "STEP wheelCount TimeStamps Length: " +
                 rightData.getTimeStamps().length);
         int timeStampsRight = IndividualWheelData.createTimestampsVector(builder,
                 rightData.getTimeStamps());
@@ -151,7 +151,7 @@ public class FlatbufferAssembler {
     }
 
     private int addOrientationData(TimeStepDataBuffer.TimeStepData timeStepData){
-        Log.v("flatbuff", "STEP orientationData TimeStamps Length: " +
+        Logger.v("flatbuff", "STEP orientationData TimeStamps Length: " +
                 timeStepData.getOrientationData().getTimeStamps().length);
         int ts = OrientationData.createTimestampsVector(builder,
                 timeStepData.getOrientationData().getTimeStamps());
@@ -163,7 +163,7 @@ public class FlatbufferAssembler {
     }
 
     private int addChargerData(TimeStepDataBuffer.TimeStepData timeStepData){
-        Log.v("flatbuff", "STEP chargerData TimeStamps Length: " +
+        Logger.v("flatbuff", "STEP chargerData TimeStamps Length: " +
                 timeStepData.getChargerData().getTimeStamps().length);
         int ts = ChargerData.createTimestampsVector(builder,
                 timeStepData.getChargerData().getTimeStamps());
@@ -173,7 +173,7 @@ public class FlatbufferAssembler {
     }
 
     private int addBatteryData(TimeStepDataBuffer.TimeStepData timeStepData){
-        Log.v("flatbuff", "STEP batteryData TimeStamps Length: " +
+        Logger.v("flatbuff", "STEP batteryData TimeStamps Length: " +
                 timeStepData.getBatteryData().getTimeStamps().length);
         int ts = BatteryData.createTimestampsVector(builder,
                 timeStepData.getBatteryData().getTimeStamps());
@@ -186,9 +186,9 @@ public class FlatbufferAssembler {
 
         TimeStepDataBuffer.TimeStepData.SoundData soundData = timeStepData.getSoundData();
 
-        Log.v("flatbuff", "Sound Data TotalSamples: " +
+        Logger.v("flatbuff", "Sound Data TotalSamples: " +
                 soundData.getTotalSamples());
-        Log.v("flatbuff", "Sound Data totalSamplesCalculatedViaTime: " +
+        Logger.v("flatbuff", "Sound Data totalSamplesCalculatedViaTime: " +
                 soundData.getTotalSamplesCalculatedViaTime());
 
         int _startTime = AudioTimestamp.createAudioTimestamp(builder,
@@ -219,8 +219,8 @@ public class FlatbufferAssembler {
 
         int numOfImages = imageData.getImages().size();
 
-        Log.v("flatbuff", numOfImages + " images gathered");
-        Log.v("flatbuff", "Step:" + myTrial.getTimeStep());
+        Logger.v("flatbuff", numOfImages + " images gathered");
+        Logger.v("flatbuff", "Step:" + myTrial.getTimeStep());
 
         int[] _images = new int[numOfImages];
 
@@ -238,7 +238,7 @@ public class FlatbufferAssembler {
 
                 _images[i] = _image;
             }catch (NullPointerException e){
-                Log.i("FlatbufferImages", "No images recorded");
+                Logger.i("FlatbufferImages", "No images recorded");
                 e.printStackTrace();
             }
         }
@@ -254,8 +254,8 @@ public class FlatbufferAssembler {
     private int addActionData(TimeStepDataBuffer.TimeStepData timeStepData){
         CommAction ca = timeStepData.getActions().getCommAction();
         MotionAction ma = timeStepData.getActions().getMotionAction();
-        Log.v("flatbuff", "CommAction : " + ca.getActionByte());
-        Log.v("flatbuff", "MotionAction : " + ma.getActionName());
+        Logger.v("flatbuff", "CommAction : " + ca.getActionByte());
+        Logger.v("flatbuff", "MotionAction : " + ma.getActionName());
         int ca_offset = jp.oist.abcvlib.core.learning.fbclasses.CommAction.createCommAction(
                 builder, ca.getActionByte(), builder.createString(ca.getActionName()));
         int ma_offset = jp.oist.abcvlib.core.learning.fbclasses.MotionAction.createMotionAction(
@@ -284,20 +284,20 @@ public class FlatbufferAssembler {
 //            To evaluate anything past this point for a given run.
 
 //            Episode episodeTest = Episode.getRootAsEpisode(episode);
-//            Log.d("flatbuff", "TimeSteps Length: "  + String.valueOf(episodeTest.timestepsLength()));
-//            Log.d("flatbuff", "WheelCounts TimeStep 0 Length: "  + String.valueOf(episodeTest.timesteps(0).wheelCounts().timestampsLength()));
-//            Log.d("flatbuff", "WheelCounts TimeStep 1 Length: "  + String.valueOf(episodeTest.timesteps(1).wheelCounts().timestampsLength()));
-//            Log.d("flatbuff", "WheelCounts TimeStep 2 Length: "  + String.valueOf(episodeTest.timesteps(2).wheelCounts().timestampsLength()));
-//            Log.d("flatbuff", "WheelCounts TimeStep 3 Length: "  + String.valueOf(episodeTest.timesteps(3).wheelCounts().timestampsLength()));
-//            Log.d("flatbuff", "WheelCounts TimeStep 3 idx 0: "  + String.valueOf(episodeTest.timesteps(3).wheelCounts().timestamps(0)));
-//            Log.d("flatbuff", "Levels Length TimeStep 100: "  + String.valueOf(episodeTest.timesteps(100).soundData().levelsLength()));
-//            Log.d("flatbuff", "SoundData ByteBuffer Length TimeStep 100: "  + String.valueOf(episodeTest.timesteps(100).soundData().getByteBuffer().capacity()));
-//            Log.d("flatbuff", "ImageData ByteBuffer Length TimeStep 100: "  + String.valueOf(episodeTest.timesteps(100).imageData().getByteBuffer().capacity()));
+//            Logger.d("flatbuff", "TimeSteps Length: "  + String.valueOf(episodeTest.timestepsLength()));
+//            Logger.d("flatbuff", "WheelCounts TimeStep 0 Length: "  + String.valueOf(episodeTest.timesteps(0).wheelCounts().timestampsLength()));
+//            Logger.d("flatbuff", "WheelCounts TimeStep 1 Length: "  + String.valueOf(episodeTest.timesteps(1).wheelCounts().timestampsLength()));
+//            Logger.d("flatbuff", "WheelCounts TimeStep 2 Length: "  + String.valueOf(episodeTest.timesteps(2).wheelCounts().timestampsLength()));
+//            Logger.d("flatbuff", "WheelCounts TimeStep 3 Length: "  + String.valueOf(episodeTest.timesteps(3).wheelCounts().timestampsLength()));
+//            Logger.d("flatbuff", "WheelCounts TimeStep 3 idx 0: "  + String.valueOf(episodeTest.timesteps(3).wheelCounts().timestamps(0)));
+//            Logger.d("flatbuff", "Levels Length TimeStep 100: "  + String.valueOf(episodeTest.timesteps(100).soundData().levelsLength()));
+//            Logger.d("flatbuff", "SoundData ByteBuffer Length TimeStep 100: "  + String.valueOf(episodeTest.timesteps(100).soundData().getByteBuffer().capacity()));
+//            Logger.d("flatbuff", "ImageData ByteBuffer Length TimeStep 100: "  + String.valueOf(episodeTest.timesteps(100).imageData().getByteBuffer().capacity()));
 
 
 //            float[] soundFloats = new float[10];
 //            episodeTest.timesteps(1).soundData().levelsAsByteBuffer().asFloatBuffer().get(soundFloats);
-//            Log.d("flatbuff", "Sound TimeStep 1 as numpy: "  + Arrays.toString(soundFloats));
+//            Logger.d("flatbuff", "Sound TimeStep 1 as numpy: "  + Arrays.toString(soundFloats));
     }
 
     private class CyclicBarrierHandler implements Runnable {
@@ -316,7 +316,7 @@ public class FlatbufferAssembler {
     protected void sendToServer() throws BrokenBarrierException, InterruptedException {
         CyclicBarrier doneSignal = new CyclicBarrier(2,
                 new CyclicBarrierHandler());
-        Log.d("SocketConnection", "New executor deployed creating new SocketConnectionManager");
+        Logger.d("SocketConnection", "New executor deployed creating new SocketConnectionManager");
         if (inetSocketAddress != null && socketListener != null){
             executor.execute(new SocketConnectionManager(socketListener, inetSocketAddress, episode, doneSignal));
             doneSignal.await();

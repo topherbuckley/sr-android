@@ -1,6 +1,6 @@
 package jp.oist.abcvlib.core.outputs;
 
-import android.util.Log;
+import jp.oist.abcvlib.util.Logger;
 
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -33,14 +33,14 @@ public class MasterController extends AbcvlibController{
         for (AbcvlibController controller : controllers){
 
             if (switches.loggerOn){
-                Log.v(TAG, controller.toString() + "output:" + controller.getOutput().left);
+                Logger.v(TAG, controller.toString() + "output:" + controller.getOutput().left);
             }
 
             setOutput((output.left + controller.getOutput().left), (output.right + controller.getOutput().right));
         }
 
         if (switches.loggerOn){
-            Log.v("abcvlib", "grandController output:" + output.left);
+            Logger.v("abcvlib", "grandController output:" + output.left);
         }
 
         serialCommManager.setMotorLevels(output.left, output.right, false, false);

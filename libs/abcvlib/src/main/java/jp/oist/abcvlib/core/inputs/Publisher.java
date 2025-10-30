@@ -4,7 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Handler;
 import android.os.HandlerThread;
-import android.util.Log;
+import jp.oist.abcvlib.util.Logger;
 
 import androidx.camera.core.ImageProxy;
 
@@ -59,7 +59,7 @@ public abstract class Publisher<T extends Subscriber> implements PermissionManag
         this.publisherManager = publisherManager;
         publisherManager.add(this);
         permissionManager = PermissionManager.getInstance(context);
-        Log.i(TAG, "Requesting permissions: " + getRequiredPermissions());
+        Logger.i(TAG, "Requesting permissions: " + getRequiredPermissions());
         permissionManager.checkPermissions(getRequiredPermissions(), this);
     }
 
@@ -98,12 +98,12 @@ public abstract class Publisher<T extends Subscriber> implements PermissionManag
 
     @Override
     public void onPermissionGranted() {
-        Log.i(TAG, "Permissions granted for " + this.getClass().getName());
+        Logger.i(TAG, "Permissions granted for " + this.getClass().getName());
         publisherManager.onPublisherPermissionsGranted(this);
     }
 
     @Override
     public void onPermissionDenied(DeniedPermissions deniedPermissions) {
-        Log.e(TAG, "Permission Error: Unable to get the following permissions: " + deniedPermissions.toString());
+        Logger.e(TAG, "Permission Error: Unable to get the following permissions: " + deniedPermissions.toString());
     }
 }

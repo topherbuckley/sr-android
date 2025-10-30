@@ -2,7 +2,7 @@ package jp.oist.abcvlib.basicassembler;
 
 import android.content.Context;
 import android.os.Handler;
-import android.util.Log;
+import jp.oist.abcvlib.util.Logger;
 
 import java.io.IOException;
 import java.util.concurrent.BrokenBarrierException;
@@ -44,7 +44,7 @@ public class MyTrial extends Trial implements ActionSelector{
         // Add your selected actions to the TimeStepDataBuffer for record
         data.getActions().add(motionAction, commAction);
 
-        Log.i("myTrail", "Current motionAction: " + motionAction.getActionName());
+        Logger.i("myTrail", "Current motionAction: " + motionAction.getActionName());
         outputs.setWheelOutput(motionAction.getLeftWheelPWM(),
                 motionAction.getRightWheelPWM(),
                 motionAction.getLeftWheelBrake(),

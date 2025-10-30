@@ -3,7 +3,7 @@ package jp.oist.abcvlib.core.inputs.phone;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.SystemClock;
-import android.util.Log;
+import jp.oist.abcvlib.util.Logger;
 
 import androidx.camera.core.ImageAnalysis;
 import androidx.camera.view.PreviewView;
@@ -104,7 +104,7 @@ public class ObjectDetectorData extends ImageData<ObjectDetectorDataSubscriber> 
                 if (isSupported) {
                     baseOptionsBuilder.useGpu();
                 } else {
-                    Log.e(TAG, "Could not use GPU");
+                    Logger.e(TAG, "Could not use GPU");
                 }
                 break;
             case DELEGATE_NNAPI:
@@ -118,10 +118,10 @@ public class ObjectDetectorData extends ImageData<ObjectDetectorDataSubscriber> 
             objectDetector =
                     ObjectDetector.createFromFileAndOptions(context, modelPath, optionsBuilder.build());
         } catch (IOException e) {
-            Log.e(TAG, "Failed to open TFLite model file from assets");
+            Logger.e(TAG, "Failed to open TFLite model file from assets");
             throw new RuntimeException(e);
         } catch (IllegalStateException e){
-            Log.e(TAG, "TFLite failed to load model with error: " + e.getMessage());
+            Logger.e(TAG, "TFLite failed to load model with error: " + e.getMessage());
         }
     }
 

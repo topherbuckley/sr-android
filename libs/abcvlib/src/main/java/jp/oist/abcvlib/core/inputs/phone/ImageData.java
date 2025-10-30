@@ -5,7 +5,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.media.Image;
 import android.os.Handler;
-import android.util.Log;
+import jp.oist.abcvlib.util.Logger;
 import android.util.Size;
 import android.view.Surface;
 
@@ -165,9 +165,9 @@ public abstract class ImageData<S extends Subscriber> extends Publisher<S> imple
         ExecutorService executor = Executors.newSingleThreadExecutor();
         executor.submit(() -> {
             try {
-                Log.i(TAG, "Waiting for preview and analysis to start");
+                Logger.i(TAG, "Waiting for preview and analysis to start");
                 countDownLatch.await();
-                Log.i(TAG, "Preview and analysis started");
+                Logger.i(TAG, "Preview and analysis started");
                 publisherManager.onPublisherInitialized();
             } catch (InterruptedException e) {
                 e.printStackTrace();
@@ -211,7 +211,7 @@ public abstract class ImageData<S extends Subscriber> extends Publisher<S> imple
                     final Observer<PreviewView.StreamState> previewViewObserver = new Observer<PreviewView.StreamState>() {
                         @Override
                         public void onChanged(PreviewView.StreamState streamState) {
-                            Log.i("previewView", "PreviewState: " + streamState.toString());
+                            Logger.i("previewView", "PreviewState: " + streamState.toString());
                             if (streamState.name().equals("STREAMING")) {
                                 countDownLatch.countDown();
                             }
@@ -229,6 +229,6 @@ public abstract class ImageData<S extends Subscriber> extends Publisher<S> imple
 
     @OnLifecycleEvent(Lifecycle.Event.ON_ANY)
     public void test() {
-        Log.v("lifecycle", "onAny");
+        Logger.v("lifecycle", "onAny");
     }
 }

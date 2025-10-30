@@ -1,6 +1,6 @@
 package jp.oist.abcvlib.util;
 
-import android.util.Log;
+import jp.oist.abcvlib.util.Logger;
 
 import com.hoho.android.usbserial.driver.SerialTimeoutException;
 
@@ -62,8 +62,9 @@ public class SerialCommManager {
                 if (cnt == 100) {
                     durationAndroid = (System.nanoTime() - startTimeAndroid) / 100;
                     cnt = 0;
+                    startTimeAndroid = System.nanoTime();
                     // convert from nanoseconds to microseconds
-                    Log.i("AndroidSide", "Average time per command: " + durationAndroid / 1000 + "us");
+                    Logger.e("AndroidSide", "Average time per command: " + durationAndroid / 1000 + "us");
                 }
             }
         }
@@ -75,7 +76,7 @@ public class SerialCommManager {
                              WheelData wheelData) {
         this.usbSerial = usbSerial;
         if (batteryData == null || wheelData == null){
-            Log.w("serial", "batteryData or wheelData was null. " +
+            Logger.w("serial", "batteryData or wheelData was null. " +
                     "Ignoring all rp2040 state values. You must initialize both to use rp2040 state");
             rp2040State = null;
         }else{
@@ -119,13 +120,13 @@ public class SerialCommManager {
             packet = fifoQueuePair.getByteArray();
 
             // Log packet as an array of hex bytes
-            Log.i(Thread.currentThread().getName(), "Received packet: " + HexBinConverters.bytesToHex(packet));
+            Logger.i(Thread.currentThread().getName(), "Received packet: " + HexBinConverters.bytesToHex(packet));
 
             // The first byte after the start mark is the command
             AndroidToRP2040Command command = fifoQueuePair.getAndroidToRP2040Command();
-            Log.i(Thread.currentThread().getName(), "Received " + command + " from pi");
+            Logger.i(Thread.currentThread().getName(), "Received " + command + " from pi");
             if (command == null){
-                Log.e("Pi2AndroidReader", "Command not found");
+                Logger.e("Pi2AndroidReader", "Command not found");
                 return;
             }
             switch (command) {
@@ -141,30 +142,30 @@ public class SerialCommManager {
                     break;
                 case NACK:
                     onNack(packet);
-                    Log.w("Pi2AndroidReader", "Nack issued from device");
+                    Logger.w("Pi2AndroidReader", "Nack issued from device");
                     result = -1;
                     break;
                 case ACK:
                     onAck(packet);
                     result = 1;
-                    Log.d("Pi2AndroidReader", "parseAck");
+                    Logger.d("Pi2AndroidReader", "parseAck");
                     break;
                 case START:
-                    Log.e("Pi2AndroidReader", "parseStart. Start should never be a command");
+                    Logger.e("Pi2AndroidReader", "parseStart. Start should never be a command");
                     result = -1;
                     break;
                 case STOP:
-                    Log.e("Pi2AndroidReader", "parseStop. Stop should never be a command");
+                    Logger.e("Pi2AndroidReader", "parseStop. Stop should never be a command");
                     result = -1;
                     break;
                 default:
-                    Log.e("Pi2AndroidReader", "parsePacket. Command not found");
+                    Logger.e("Pi2AndroidReader", "parsePacket. Command not found");
                     result = -1;
                     break;
             }
         }
         else {
-            Log.i(Thread.currentThread().getName(), "No packet in queue");
+            Logger.i(Thread.currentThread().getName(), "No packet in queue");
             result = 0;
         }
     }
@@ -317,53 +318,53 @@ public class SerialCommManager {
     // ---- Override these defaults with your own handlers -----///
     //----------------------------------------------------------///
     private void parseLog(byte[] bytes) {
-        Log.d("serial", "parseLogs");
+        Logger.d("serial", "parseLogs");
         String string = new String(bytes, StandardCharsets.US_ASCII);
         String[] lines = string.split("\\r?\\n");
         for (String line : lines) {
-            Log.i("rp2040Log", line);
+            Logger.i("rp2040Log", line);
         }
     }
     private void parseStatus(byte[] bytes) {
-        Log.d("serial", "parseStatus");
+        Logger.d("serial", "parseStatus");
         if (rp2040State != null){
             ByteBuffer byteBuffer = ByteBuffer.wrap(bytes);
             byteBuffer.order(java.nio.ByteOrder.LITTLE_ENDIAN);
             if (rp2040State.motorsState.controlValues.left != byteBuffer.get()){
-                Log.e("serial", "Left control value mismatch");
+                //Logger.e("serial", "Left control value mismatch");
             }
             if (rp2040State.motorsState.controlValues.right != byteBuffer.get()){
-                Log.e("serial", "Right control value mismatch");
+                //Logger.e("serial", "Right control value mismatch");
             }
             rp2040State.motorsState.faults.left = byteBuffer.get();
             rp2040State.motorsState.faults.right = byteBuffer.get();
-            Log.v("serial", "left motor fault: " + rp2040State.motorsState.faults.left);
-            Log.v("serial", "right motor fault: " + rp2040State.motorsState.faults.right);
+            Logger.v("serial", "left motor fault: " + rp2040State.motorsState.faults.left);
+            Logger.v("serial", "right motor fault: " + rp2040State.motorsState.faults.right);
             rp2040State.motorsState.encoderCounts.left = byteBuffer.getInt();
             rp2040State.motorsState.encoderCounts.right = byteBuffer.getInt();
-            Log.v("serial", "Left encoder count: " + rp2040State.motorsState.encoderCounts.left);
-            Log.v("serial", "Right encoder count: " + rp2040State.motorsState.encoderCounts.right);
+            Logger.v("serial", "Left encoder count: " + rp2040State.motorsState.encoderCounts.left);
+            Logger.v("serial", "Right encoder count: " + rp2040State.motorsState.encoderCounts.right);
             rp2040State.batteryDetails.voltage = byteBuffer.getShort();
             rp2040State.batteryDetails.safety_status = byteBuffer.get();
             rp2040State.batteryDetails.temperature = byteBuffer.getShort();
             rp2040State.batteryDetails.state_of_health = byteBuffer.get();
             rp2040State.batteryDetails.flags = byteBuffer.getShort();
-            Log.v("serial", "Battery voltage: " + rp2040State.batteryDetails.voltage);
-            Log.v("serial", "Battery voltage in V: " + rp2040State.batteryDetails.getVoltage());
+            Logger.v("serial", "Battery voltage: " + rp2040State.batteryDetails.voltage);
+            Logger.v("serial", "Battery voltage in V: " + rp2040State.batteryDetails.getVoltage());
             rp2040State.chargeSideUSB.max77976_chg_details = byteBuffer.getInt();
             rp2040State.chargeSideUSB.ncp3901_wireless_charger_attached = byteBuffer.get() == 1;
-            Log.v("serial", "ncp3901_wireless_charger_attached: " + rp2040State.chargeSideUSB.ncp3901_wireless_charger_attached);
+            Logger.v("serial", "ncp3901_wireless_charger_attached: " + rp2040State.chargeSideUSB.ncp3901_wireless_charger_attached);
             rp2040State.chargeSideUSB.usb_charger_voltage = byteBuffer.getShort();
             rp2040State.chargeSideUSB.wireless_charger_vrect = byteBuffer.getShort();
-            //Log.v("serial", "usb_charger_voltage: " + rp2040State.chargeSideUSB.usb_charger_voltage);
+            //Logger.v("serial", "usb_charger_voltage: " + rp2040State.chargeSideUSB.usb_charger_voltage);
             rp2040State.updatePublishers();
         }
     }
     private void onNack(byte[] bytes) {
-        Log.d("serial", "parseNack");
+        Logger.d("serial", "parseNack");
     }
     private void onAck(byte[] bytes) {
-        Log.d("serial", "parseAck");
+        Logger.d("serial", "parseAck");
     }
 
 

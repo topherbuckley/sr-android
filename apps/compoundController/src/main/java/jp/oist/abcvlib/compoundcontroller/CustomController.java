@@ -1,6 +1,6 @@
 package jp.oist.abcvlib.compoundcontroller;
 
-import android.util.Log;
+import jp.oist.abcvlib.util.Logger;
 
 import jp.oist.abcvlib.core.inputs.Publisher;
 import jp.oist.abcvlib.core.inputs.microcontroller.WheelDataSubscriber;
@@ -31,6 +31,6 @@ public class CustomController extends AbcvlibController implements WheelDataSubs
     @Override
     public void onWheelDataUpdate(long timestamp, int wheelCountL, int wheelCountR, double wheelDistanceL, double wheelDistanceR, double wheelSpeedInstantL, double wheelSpeedInstantR, double wheelSpeedBufferedL, double wheelSpeedBufferedR, double wheelSpeedExpAvgL, double wheelSpeedExpAvgR) {
         actualSpeed = wheelSpeedBufferedL;
-        Log.d("WheelUpdate", "wheelSpeedBufferedL: " + wheelSpeedBufferedL + ", wheelSpeedBufferedR: " + wheelSpeedBufferedR);
+        Logger.d("WheelUpdate", "wheelSpeedBufferedL: " + wheelSpeedBufferedL + ", wheelSpeedBufferedR: " + wheelSpeedBufferedR);
     }
 }

@@ -1,6 +1,6 @@
 package jp.oist.abcvlib.tests;
 
-import android.util.Log;
+import jp.oist.abcvlib.util.Logger;
 
 import jp.oist.abcvlib.core.inputs.Publisher;
 import jp.oist.abcvlib.core.inputs.microcontroller.WheelDataSubscriber;
@@ -69,7 +69,7 @@ public class BalancePIDController extends AbcvlibController implements WheelData
                 expWeight = expWeight_;
                 maxAbsTilt = maxAbsTilt_;
         } catch (NullPointerException e){
-            Log.e(TAG,"Error", e);
+            Logger.e(TAG,"Error", e);
             Thread.sleep(1000);
         }
     }
@@ -109,7 +109,7 @@ public class BalancePIDController extends AbcvlibController implements WheelData
         e_t = setPoint - thetaDeg;
         // error betweeen actual and desired wheel speed (default 0)
         double e_w = 0.0 - speedL;
-        Log.v(TAG, "speedL:" + speedL);
+        Logger.v(TAG, "speedL:" + speedL);
 
         double p_out = (p_tilt * e_t) + (p_wheel * e_w);
         double i_out = i_tilt * int_e_t;

@@ -3,7 +3,7 @@ package jp.oist.abcvlib.core.inputs.phone;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.media.Image;
-import android.util.Log;
+import jp.oist.abcvlib.util.Logger;
 
 import androidx.annotation.NonNull;
 import androidx.camera.core.ImageAnalysis;

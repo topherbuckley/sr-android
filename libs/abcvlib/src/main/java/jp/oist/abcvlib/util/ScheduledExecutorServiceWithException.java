@@ -1,6 +1,6 @@
 package jp.oist.abcvlib.util;
 
-import android.util.Log;
+import jp.oist.abcvlib.util.Logger;
 
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
@@ -67,7 +67,7 @@ public class ScheduledExecutorServiceWithException {
                     executor.shutdown();
                     throw new RuntimeException(e);
                 } catch (InterruptedException | CancellationException e){
-//                    Log.d(TAG, "Executor Interrupted or Cancelled", e);
+//                    Logger.d(TAG, "Executor Interrupted or Cancelled", e);
                 }
             }
         });

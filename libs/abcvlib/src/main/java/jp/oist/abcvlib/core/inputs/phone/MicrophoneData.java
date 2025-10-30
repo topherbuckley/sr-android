@@ -9,7 +9,7 @@ import android.media.AudioTimestamp;
 import android.media.MediaRecorder;
 import android.os.Handler;
 import android.os.HandlerThread;
-import android.util.Log;
+import jp.oist.abcvlib.util.Logger;
 
 import com.intentfilter.androidpermissions.models.DeniedPermissions;
 
@@ -59,7 +59,7 @@ public class MicrophoneData extends Publisher<MicrophoneDataSubscriber> implemen
         while (recorder.getTimestamp(startTime, AudioTimestamp.TIMEBASE_MONOTONIC) == AudioRecord.ERROR_INVALID_OPERATION){
             recorder.getTimestamp(startTime, AudioTimestamp.TIMEBASE_MONOTONIC);
         }
-        Log.i("microphone_start", "StartFrame:" + startTime.framePosition + " NanoTime: " + startTime.nanoTime);
+        Logger.i("microphone_start", "StartFrame:" + startTime.framePosition + " NanoTime: " + startTime.nanoTime);
         publisherManager.onPublisherInitialized();
         super.start();
     }
@@ -117,7 +117,7 @@ public class MicrophoneData extends Publisher<MicrophoneDataSubscriber> implemen
                 @SuppressLint("WrongConstant") int numSamples = audioRecord.read(audioData, 0,
                         readBufferSize, AudioRecord.READ_NON_BLOCKING);
                 if (numSamples < readBufferSize){
-                    Log.w("microphone", "Missed some audio samples");
+                    Logger.w("microphone", "Missed some audio samples");
                 }
                 onNewAudioData(audioData, numSamples);
             });

@@ -6,7 +6,7 @@ import static android.graphics.ImageFormat.YUV_444_888;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.util.Log;
+import jp.oist.abcvlib.util.Logger;
 import android.util.Size;
 
 import androidx.camera.core.ImageAnalysis;
@@ -72,12 +72,12 @@ public class QRCodeData extends ImageData<QRCodeDataSubscriber>{
                     subscriber.onQRCodeDetected(qrDecodedData);
                 }
             } catch (FormatException e) {
-                Log.v("qrcode", "QR Code cannot be decoded");
+                Logger.v("qrcode", "QR Code cannot be decoded");
             } catch (ChecksumException e) {
-                Log.v("qrcode", "QR Code error correction failed");
+                Logger.v("qrcode", "QR Code error correction failed");
                 e.printStackTrace();
             } catch (NotFoundException e) {
-                Log.v("qrcode", "QR Code not found");
+                Logger.v("qrcode", "QR Code not found");
             }
         }
     }

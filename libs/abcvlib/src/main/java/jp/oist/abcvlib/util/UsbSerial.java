@@ -10,7 +10,7 @@ import android.content.IntentFilter;
 import android.hardware.usb.UsbDevice;
 import android.hardware.usb.UsbDeviceConnection;
 import android.hardware.usb.UsbManager;
-import android.util.Log;
+import jp.oist.abcvlib.util.Logger;
 
 import com.hoho.android.usbserial.driver.CdcAcmSerialDriver;
 import com.hoho.android.usbserial.driver.ProbeTable;
@@ -88,15 +88,15 @@ public class UsbSerial implements SerialInputOutputManager.Listener{
 
         for (UsbDevice d: deviceList.values()){
             if (d.getManufacturerName().equals("Seeed") && d.getProductName().equals("Seeeduino XIAO")){
-                Log.i(Thread.currentThread().getName(), "Found a XIAO. Connecting...");
+                Logger.i(Thread.currentThread().getName(), "Found a XIAO. Connecting...");
                 connect(d);
             }
             else if (d.getManufacturerName().equals("Raspberry Pi") && d.getProductName().equals("Pico Test Device")){
-                Log.i(Thread.currentThread().getName(), "Found a Pico Test Device. Connecting...");
+                Logger.i(Thread.currentThread().getName(), "Found a Pico Test Device. Connecting...");
                 connect(d);
             }
             else if (d.getManufacturerName().equals("Raspberry Pi") && d.getProductName().equals("Pico")){
-                Log.i(Thread.currentThread().getName(), "Found a Pi. Connecting...");
+                Logger.i(Thread.currentThread().getName(), "Found a Pi. Connecting...");
                 connect(d);
             }
         }
@@ -108,18 +108,18 @@ public class UsbSerial implements SerialInputOutputManager.Listener{
 
     private void connect(UsbDevice device) throws IOException {
         if(usbManager.hasPermission(device)){
-            Log.i(Thread.currentThread().getName(), "Has permission to connect to device");
+            Logger.i(Thread.currentThread().getName(), "Has permission to connect to device");
             UsbDeviceConnection connection = usbManager.openDevice(device);
             openPort(connection);
         }else{
-            Log.i(Thread.currentThread().getName(), "Requesting permission to connect to device");
+            Logger.i(Thread.currentThread().getName(), "Requesting permission to connect to device");
             PendingIntent permissionIntent = PendingIntent.getBroadcast(context, 0, new Intent(ACTION_USB_PERMISSION), 0);
             usbManager.requestPermission(device, permissionIntent);
         }
     }
 
     private void openPort(UsbDeviceConnection connection) {
-        Log.i(Thread.currentThread().getName(), "Opening port");
+        Logger.i(Thread.currentThread().getName(), "Opening port");
         UsbSerialDriver driver = getDriver();
         UsbSerialPort port = driver.getPorts().get(0); // Most devices have just one port (port 0)
         try {
@@ -166,18 +166,18 @@ public class UsbSerial implements SerialInputOutputManager.Listener{
         for (byte b : data) {
             sb.append(String.format("%02X ", b));
         }
-        Log.d(TAG, "onNewData Received: " + sb.toString());
+        Logger.d(TAG, "onNewData Received: " + sb.toString());
 
         // Run the packet verification in a separate thread
         try {
             lock.lock();
             if (verifyPacket(data)){
-                Log.d(TAG, "Packet verified");
-                Log.d(TAG, "packetReceived.signal()");
+                Logger.d(TAG, "Packet verified");
+                Logger.d(TAG, "packetReceived.signal()");
                 packetReceived.signal();
             }
             else{
-                Log.d(TAG, "Incomplete Packet. Waiting for more data");
+                Logger.d(TAG, "Incomplete Packet. Waiting for more data");
             };
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -188,7 +188,7 @@ public class UsbSerial implements SerialInputOutputManager.Listener{
 
     protected void send(byte[] packet, int timeout) throws IOException {
         port.write(packet, timeout);
-        Log.i(Thread.currentThread().getName(), "send()");
+        Logger.i(Thread.currentThread().getName(), "send()");
     }
 
     /**
@@ -203,7 +203,7 @@ public class UsbSerial implements SerialInputOutputManager.Listener{
 //                throw new RuntimeException("SerialTimeoutException on send. The serial connection " +
 //                        "with the rp2040 is not working as expected and timed out");
             } else {
-                Log.d(Thread.currentThread().getName(), "packetReceived.await() completed. Packet received from rp2040");
+                Logger.d(Thread.currentThread().getName(), "packetReceived.await() completed. Packet received from rp2040");
                 returnVal = 1;
             }
         } catch (InterruptedException e) {
@@ -226,12 +226,12 @@ public class UsbSerial implements SerialInputOutputManager.Listener{
             // Always overwrite the value of stopIdx as you want the last instance
             if (value == AndroidToRP2040Command.STOP.getHexValue()) {
                 startStopIdx.stopIdx = i;
-                Log.v("serial", "stopIdx found at " + i);
+                Logger.v("serial", "stopIdx found at " + i);
             }
             // Only write the value of startIdx once as you only want the first instance.
             else if (value == AndroidToRP2040Command.START.getHexValue() && startStopIdx.startIdx < 0){
                 startStopIdx.startIdx = i;
-                Log.v("serial", "startIdx found at " + i);
+                Logger.v("serial", "startIdx found at " + i);
             }
             i++;
         }
@@ -251,7 +251,7 @@ public class UsbSerial implements SerialInputOutputManager.Listener{
      */
     protected synchronized boolean verifyPacket(byte[] bytes) throws IOException {
         if (packetBuffer.remaining() < bytes.length) {
-            Log.e("verifyPacket", "Buffer overflow risk: clearing buffer and resynchronizing.");
+            Logger.e("verifyPacket", "Buffer overflow risk: clearing buffer and resynchronizing.");
             packetBuffer.clear();
             onBadPacket();
             return false;
@@ -265,12 +265,12 @@ public class UsbSerial implements SerialInputOutputManager.Listener{
 
         // If startIdx still not found, return false
         if (startStopIdx.startIdx < 0){
-            Log.v("serial", "StartIdx not yet found. Waiting for more data");
+            Logger.v("serial", "StartIdx not yet found. Waiting for more data");
             return false;
         }
         // else startIdx found
         else{
-            Log.v("serial", "StartIdx found at " + startStopIdx.startIdx);
+            Logger.v("serial", "StartIdx found at " + startStopIdx.startIdx);
             // if packetType not yet found, find it
             if (packetType == AndroidToRP2040Command.NACK){
                 // If position is 0, nothing received yet. If position is 1 only the start mark has been received.
@@ -279,8 +279,8 @@ public class UsbSerial implements SerialInputOutputManager.Listener{
                     try{
                         packetType = AndroidToRP2040Command.getEnumByValue(packetBuffer.get(startStopIdx.startIdx + RP2040ToAndroidPacket.Offsets.PACKET_TYPE));
                     }catch (IndexOutOfBoundsException e){
-                        Log.e("serial", "IndexOutOfBoundsException: " + e.getMessage());
-                        Log.e("serial", "Unknown packetType: " + packetType);
+                        Logger.e("serial", "IndexOutOfBoundsException: " + e.getMessage());
+                        Logger.e("serial", "Unknown packetType: " + packetType);
                         // Ignore this packet as it is corrupted by some other data being sent between.
                         packetBuffer.clear();
                         return true;
@@ -288,14 +288,14 @@ public class UsbSerial implements SerialInputOutputManager.Listener{
                     // get the packetDataSize. It is stored at index 3 and 4 as a short
                     packetDataSize = packetBuffer.getShort(startStopIdx.startIdx + RP2040ToAndroidPacket.Offsets.DATA_SIZE) & 0xFFFF;
                     if (packetDataSize > 2048) { // sanity check for max packet size
-                        Log.e("verifyPacket", "Unreasonable packet size: " + packetDataSize + ". Resynchronizing.");
+                        Logger.e("verifyPacket", "Unreasonable packet size: " + packetDataSize + ". Resynchronizing.");
                         onBadPacket();
                         return true;
                     }
-                    Log.v("serial", packetType + " packetType of size " + packetDataSize + " found at " + (startStopIdx.startIdx + RP2040ToAndroidPacket.Offsets.PACKET_TYPE));
+                    Logger.v("serial", packetType + " packetType of size " + packetDataSize + " found at " + (startStopIdx.startIdx + RP2040ToAndroidPacket.Offsets.PACKET_TYPE));
                 }
                 else{
-                    Log.v("serial", "Nothing other than startIdx found. Waiting for more data");
+                    Logger.v("serial", "Nothing other than startIdx found. Waiting for more data");
                     return false;
                 }
             }
@@ -305,9 +305,9 @@ public class UsbSerial implements SerialInputOutputManager.Listener{
             startStopIdx.stopIdx = startStopIdx.startIdx + packetDataSize + (RP2040ToAndroidPacket.Offsets.DATA);
             // +1 for packetBuffer.position() needing to be 1 after endIdx byte to indicate that you have the stopIdx byte
             if (packetBuffer.position() < (startStopIdx.stopIdx + 1)){
-                Log.d("verifyPacket", "Data received not yet enough to fill " +
+                Logger.d("verifyPacket", "Data received not yet enough to fill " +
                         packetType + " packetType. Waiting for more data");
-                Log.d("verifyPacket", packetBuffer.position() + " bytes recvd thus far. Require " + startStopIdx.stopIdx);
+                Logger.d("verifyPacket", packetBuffer.position() + " bytes recvd thus far. Require " + startStopIdx.stopIdx);
                 return false;
             }
             // You have enough data for a full packet
@@ -318,13 +318,13 @@ public class UsbSerial implements SerialInputOutputManager.Listener{
                 }
                 else {
                     if (packetType == AndroidToRP2040Command.GET_LOG) {
-                        Log.i("verifyPacket", "GET_LOG command received");
+                        Logger.i("verifyPacket", "GET_LOG command received");
                     } else if (packetType == AndroidToRP2040Command.SET_MOTOR_LEVELS) {
-                        Log.i("verifyPacket", "SET_MOTOR_LEVELS command received");
+                        Logger.i("verifyPacket", "SET_MOTOR_LEVELS command received");
                     } else if (packetType == AndroidToRP2040Command.GET_STATE) {
-                        Log.i("verifyPacket", "GET_STATE command received");
+                        Logger.i("verifyPacket", "GET_STATE command received");
                     } else {
-                        Log.e("verifyPacket", "Unknown packetType: " + packetType);
+                        Logger.e("verifyPacket", "Unknown packetType: " + packetType);
                         onBadPacket();
                         return true;
                     }
@@ -343,7 +343,7 @@ public class UsbSerial implements SerialInputOutputManager.Listener{
         packetBuffer.clear();
         synchronized (fifoQueue) {
             if (fifoQueue.isAtFullCapacity()) {
-                Log.e("serial", "fifoQueue is full");
+                Logger.e("serial", "fifoQueue is full");
                 throw new RuntimeException("fifoQueue is full");
             } else {
                 // Log partialArray as array of hex values
@@ -351,7 +351,7 @@ public class UsbSerial implements SerialInputOutputManager.Listener{
                 for (byte b : partialArray) {
                     sb.append(String.format("%02X ", b));
                 }
-                Log.d("verifyPacket", "Adding Packet: " + sb.toString() + " to fifoQueue");
+                Logger.d("verifyPacket", "Adding Packet: " + sb.toString() + " to fifoQueue");
                 FifoQueuePair fifoQueuePair = new FifoQueuePair(packetType, partialArray);
                 fifoQueue.add(fifoQueuePair); // Add the partialArray to the queue
             }
@@ -365,7 +365,7 @@ public class UsbSerial implements SerialInputOutputManager.Listener{
     private static final int BAD_PACKET_THRESHOLD = 5;
 
     private void onBadPacket(){
-        Log.e("serial", "Bad packet received. Clearing buffer and sending next command.");
+        Logger.e("serial", "Bad packet received. Clearing buffer and sending next command.");
         // Ignore this packet as it is corrupted by some other data being sent between.
         packetBuffer.clear();
         while (packetBuffer.hasRemaining()) {
@@ -376,7 +376,7 @@ public class UsbSerial implements SerialInputOutputManager.Listener{
         packetType = AndroidToRP2040Command.NACK;
         badPacketCount++;
         if (badPacketCount >= BAD_PACKET_THRESHOLD) {
-            Log.e("serial", "Too many consecutive bad packets. Consider resetting connection or notifying user.");
+            Logger.e("serial", "Too many consecutive bad packets. Consider resetting connection or notifying user.");
             // Optionally: trigger recovery, e.g., re-initialize serial connection or notify user
             // recoverSerialConnection();
             // For now, just reset the counter
@@ -403,7 +403,7 @@ public class UsbSerial implements SerialInputOutputManager.Listener{
 
     @Override
     public void onRunError(Exception e) {
-        Log.e("serial", "error: " + e.getLocalizedMessage());
+        Logger.e("serial", "error: " + e.getLocalizedMessage());
         e.printStackTrace();
     }
 
@@ -422,7 +422,7 @@ public class UsbSerial implements SerialInputOutputManager.Listener{
                     }
                 }
             }else {
-                Log.d("serial", "permission denied for device " + device);
+                Logger.d("serial", "permission denied for device " + device);
             }
         }
     }

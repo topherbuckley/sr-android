@@ -3,7 +3,7 @@ package jp.oist.abcvlib.core.outputs;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
-import android.util.Log;
+import jp.oist.abcvlib.util.Logger;
 
 import java.io.IOException;
 

@@ -9,7 +9,7 @@ import android.graphics.RectF;
 import android.media.AudioTimestamp;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
+import jp.oist.abcvlib.util.Logger;
 
 import androidx.camera.view.PreviewView;
 
@@ -163,19 +163,19 @@ public class MainActivity extends AbcvlibActivity implements SerialReadyListener
     // Main loop for any application extending AbcvlibActivity. This is where you will put your main code
     @Override
     protected void abcvlibMainLoop(){
-        Log.d("MAIN_LOOP", "speedL: " + speedL + " speedR: " + speedR);
+        Logger.d("MAIN_LOOP", "speedL: " + speedL + " speedR: " + speedR);
         outputs.setWheelOutput(speedL, speedR, false, false);
     }
 
     @Override
     public void onBatteryVoltageUpdate(long timestamp, double voltage) {
-//        Log.i(TAG, "Battery Update: Voltage=" + voltage + " Timestemp=" + timestamp);
+//        Logger.i(TAG, "Battery Update: Voltage=" + voltage + " Timestemp=" + timestamp);
         guiUpdater.batteryVoltage = voltage; // make volitile
     }
 
     @Override
     public void onChargerVoltageUpdate(long timestamp, double chargerVoltage, double coilVoltage) {
-//        Log.i(TAG, "Charger Update: Voltage=" + voltage + " Timestemp=" + timestamp);
+//        Logger.i(TAG, "Charger Update: Voltage=" + voltage + " Timestemp=" + timestamp);
         guiUpdater.chargerVoltage = chargerVoltage;
         guiUpdater.coilVoltage = coilVoltage;
     }
@@ -186,7 +186,7 @@ public class MainActivity extends AbcvlibActivity implements SerialReadyListener
                                   double wheelSpeedInstantL, double wheelSpeedInstantR,
                                   double wheelSpeedBufferedL, double wheelSpeedBufferedR,
                                   double wheelSpeedExpAvgL, double wheelSpeedExpAvgR) {
-//        Log.i(TAG, "Wheel Data Update: Timestamp=" + timestamp + " countLeft=" + countLeft +
+//        Logger.i(TAG, "Wheel Data Update: Timestamp=" + timestamp + " countLeft=" + countLeft +
 //                " countRight=" + countRight);
 //        double distanceLeft = WheelData.countsToDistance(countLeft);
         guiUpdater.wheelCountL = wheelCountL;
@@ -221,7 +221,7 @@ public class MainActivity extends AbcvlibActivity implements SerialReadyListener
                     category = currentCategory;
                     label = category.getLabel();
                     boundingBox = result.getBoundingBox();
-                    Log.d("PUCK", "Puck detected");
+                    Logger.d("PUCK", "Puck detected");
                     break;
                 }
             }
@@ -232,7 +232,7 @@ public class MainActivity extends AbcvlibActivity implements SerialReadyListener
             if (category != null) {
                 @SuppressLint("DefaultLocale") String score = String.format("%.2f", category.getScore());
                 @SuppressLint("DefaultLocale") String time = String.format("%d", inferenceTime);
-                Log.v("PUCK", "ObjectDetector: " + label + " : " + score + " : " + time + "ms");
+                Logger.v("PUCK", "ObjectDetector: " + label + " : " + score + " : " + time + "ms");
                 guiUpdater.objectDetectorString = label + " : " + score + " : " + time + "ms";
             } else {
                 guiUpdater.objectDetectorString = "No puck detected";
@@ -255,8 +255,8 @@ public class MainActivity extends AbcvlibActivity implements SerialReadyListener
         else if (action == Action.APPROACH && visible){
             float errorX = 2f * ((centerX / width) - 0.5f); // Error normalized from -1 to 1 from horizontal center
             float errorY = 1 - (centerY / height); // Error normalized to 1 from bottom. 1 - as origin apparently at top of image
-            Log.v("PUCK", "ErrorX: " + errorX + " ErrorY: " + errorY);
-            Log.v("PUCK", "centeredPuck: " + centeredPuck + " puckCloseToBottom: " + puckCloseToBottom);
+            Logger.v("PUCK", "ErrorX: " + errorX + " ErrorY: " + errorY);
+            Logger.v("PUCK", "centeredPuck: " + centeredPuck + " puckCloseToBottom: " + puckCloseToBottom);
 
             // Implement hysteresis on both error signals to prevent jitter
             float centeredLowerThreshold = 0.5f;
@@ -289,14 +289,14 @@ public class MainActivity extends AbcvlibActivity implements SerialReadyListener
 
     private void searching(){
 //        action = Action.SEARCHING;
-        Log.v("PUCK", "Action.SEARCHING");
-        speedL = 0.5f;
-        speedR = -0.5f;
+        Logger.v("PUCK", "Action.SEARCHING");
+        speedL = 0.3f;
+        speedR = -0.3f;
     }
 
     private void approach(float errorX, float errorY){
         action = Action.APPROACH;
-        Log.i("PUCK", "Action.APPROACH");
+        Logger.i("PUCK", "Action.APPROACH");
 
         speedL = (-errorX * p_controller) + forwardBias;
         speedR = (errorX * p_controller) + forwardBias;
@@ -304,7 +304,7 @@ public class MainActivity extends AbcvlibActivity implements SerialReadyListener
 
     private void mount(){
         action = Action.MOUNT;
-        Log.i("PUCK", "Action.MOUNT");
+        Logger.i("PUCK", "Action.MOUNT");
         speedL = 1f;
         speedR = 1f;
         // start async timer task to call dismount 5 seconds later
@@ -321,7 +321,7 @@ public class MainActivity extends AbcvlibActivity implements SerialReadyListener
 
     private void dismount(){
         action = Action.DISMOUNT;
-        Log.i("PUCK", "Action.DISMOUNT");
+        Logger.i("PUCK", "Action.DISMOUNT");
         speedL = -1.0f;
         speedR = -1.0f;
         // start async timer task to call reset 3 seconds later
@@ -331,7 +331,7 @@ public class MainActivity extends AbcvlibActivity implements SerialReadyListener
 
     private void reset(){
         action = Action.RESET;
-        Log.i("PUCK", "Action.RESET");
+        Logger.i("PUCK", "Action.RESET");
         // Turn in random direction for 3 seconds then set state to APPROACH
         Random random = new Random();
         int direction = random.nextBoolean() ? 1 : -1;
@@ -347,4 +347,3 @@ public class MainActivity extends AbcvlibActivity implements SerialReadyListener
         speedR = 0.0f;
     }
 }
-

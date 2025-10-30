@@ -3,7 +3,7 @@ package jp.oist.abcvlib.core.inputs.microcontroller;
 import android.content.Context;
 import android.os.Handler;
 import android.os.HandlerThread;
-import android.util.Log;
+import jp.oist.abcvlib.util.Logger;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -211,7 +211,7 @@ public class WheelData extends Publisher<WheelDataSubscriber> {
                 speedExponentialAvg = exponentialAvg(speedBuffered, speedExponentialAvg, expWeight);
             }
             else{
-                Log.i("sensorDebugging", "dt_buffer == 0");
+                Logger.i("sensorDebugging", "dt_buffer == 0");
             }
         }
 

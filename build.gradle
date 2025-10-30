@@ -140,14 +140,7 @@ subprojects {
                 versionCode = 1
             }
         }
-        buildTypes {
-            release {
-                minifyEnabled true
-            }
-            debug {
-                minifyEnabled false
-            }
-        }
+
         ndkVersion = "21.0.6113669"
     }
 }

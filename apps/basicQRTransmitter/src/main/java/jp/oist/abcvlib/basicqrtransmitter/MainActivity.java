@@ -1,7 +1,7 @@
 package jp.oist.abcvlib.basicqrtransmitter;
 
 import android.os.Bundle;
-import android.util.Log;
+import jp.oist.abcvlib.util.Logger;
 
 import java.util.concurrent.TimeUnit;
 
@@ -90,7 +90,7 @@ public class MainActivity extends AbcvlibActivity implements SerialReadyListener
     @Override
     public void onQRCodeDetected(String qrDataDecoded) {
         if (!qrDataDecoded.equals("")){
-            Log.i("qrcode", "QR Code Found and decoded: " + qrDataDecoded);
+            Logger.i("qrcode", "QR Code Found and decoded: " + qrDataDecoded);
         }
     }
 

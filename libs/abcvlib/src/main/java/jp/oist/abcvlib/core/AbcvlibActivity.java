@@ -4,7 +4,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.hardware.usb.UsbManager;
 import android.os.Bundle;
-import android.util.Log;
+import jp.oist.abcvlib.util.Logger;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
@@ -70,7 +70,7 @@ public abstract class AbcvlibActivity extends AppCompatActivity implements Seria
 
     public void onSerialReady(UsbSerial usbSerial) {
         if (serialCommManager == null){
-            Log.w(TAG, "Default SerialCommManager being used. If you intended to create your " +
+            Logger.w(TAG, "Default SerialCommManager being used. If you intended to create your " +
                     "own, make sure you initialize it in onCreate prior to calling super.onCreate().");
             serialCommManager = new SerialCommManager(usbSerial);
         }
@@ -87,7 +87,7 @@ public abstract class AbcvlibActivity extends AppCompatActivity implements Seria
 
     protected void onOutputsReady(){
         // Override this method in your MainActivity to do anything that requires the outputs
-        Log.w(TAG, "onOutputsReady not overridden. Override this method in your MainActivity to " +
+        Logger.w(TAG, "onOutputsReady not overridden. Override this method in your MainActivity to " +
                 "do anything that requires the outputs.");
     }
 
@@ -131,8 +131,8 @@ public abstract class AbcvlibActivity extends AppCompatActivity implements Seria
     }
 
     public void onEncoderCountsRec(int left, int right){
-        Log.d("serial", "Left encoder count: " + left);
-        Log.d("serial", "Right encoder count: " + right);
+        Logger.d("serial", "Left encoder count: " + left);
+        Logger.d("serial", "Right encoder count: " + right);
     }
 
     protected void setAndroi2PiWriter(Runnable android2PiWriter){
@@ -175,7 +175,7 @@ public abstract class AbcvlibActivity extends AppCompatActivity implements Seria
     @Override
     protected void onStop() {
         super.onStop();
-        Log.v(TAG, "End of AbcvlibActivity.onStop");
+        Logger.v(TAG, "End of AbcvlibActivity.onStop");
     }
 
     @Override
@@ -186,7 +186,7 @@ public abstract class AbcvlibActivity extends AppCompatActivity implements Seria
             serialCommManager.setMotorLevels(0, 0, true, true);
             serialCommManager.stop();
         }
-        Log.i(TAG, "End of AbcvlibActivity.onPause");
+        Logger.i(TAG, "End of AbcvlibActivity.onPause");
     }
 
     public Switches getSwitches() {

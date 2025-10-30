@@ -1,6 +1,6 @@
 package jp.oist.abcvlib.util;
 
-import android.util.Log;
+import jp.oist.abcvlib.util.Logger;
 
 import androidx.fragment.app.FragmentManager;
 
@@ -31,7 +31,7 @@ public class QRCode {
             fragmentManager.popBackStack();
         }
         else {
-            Log.e("QRCode", "Attempted to close nonexistant QR Code");
+            Logger.e("QRCode", "Attempted to close nonexistant QR Code");
         }
     }
 }

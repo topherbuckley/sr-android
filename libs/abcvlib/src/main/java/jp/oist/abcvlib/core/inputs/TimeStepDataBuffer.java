@@ -2,7 +2,7 @@ package jp.oist.abcvlib.core.inputs;
 
 import android.graphics.Bitmap;
 import android.media.AudioTimestamp;
-import android.util.Log;
+import jp.oist.abcvlib.util.Logger;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -129,7 +129,7 @@ public class TimeStepDataBuffer implements BatteryDataSubscriber, WheelDataSubsc
 
     @Override
     public void onQRCodeDetected(String qrDataDecoded) {
-        Log.i("qrcode", "Qrcode detected: " + qrDataDecoded);
+        Logger.i("qrcode", "Qrcode detected: " + qrDataDecoded);
     }
 
     public static class TimeStepData{
@@ -336,7 +336,7 @@ public class TimeStepDataBuffer implements BatteryDataSubscriber, WheelDataSubsc
             }
 
             public void setMetaData(int sampleRate, AudioTimestamp startTime, AudioTimestamp endTime){
-//                Log.i("audioFrame", (this.endTime.nanoTime - startTime.nanoTime) + " missing nanoseconds between last frames");
+//                Logger.i("audioFrame", (this.endTime.nanoTime - startTime.nanoTime) + " missing nanoseconds between last frames");
 
                 if (startTime.framePosition != 0){
                     this.startTime = startTime;

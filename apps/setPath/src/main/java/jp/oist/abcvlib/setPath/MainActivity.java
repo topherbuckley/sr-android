@@ -1,7 +1,7 @@
 package jp.oist.abcvlib.setPath;
 
 import android.os.Bundle;
-import android.util.Log;
+import jp.oist.abcvlib.util.Logger;
 
 import jp.oist.abcvlib.core.AbcvlibActivity;
 import jp.oist.abcvlib.core.AbcvlibLooper;
@@ -52,7 +52,7 @@ public class MainActivity extends AbcvlibActivity implements IOReadyListener {
                 getOutputs().setWheelOutput(speed, speed / 3);
                 Thread.sleep(5000);
             } catch (InterruptedException e) {
-                Log.e("setPath","Error", e);
+                Logger.e("setPath","Error", e);
                 throw new RuntimeException("This is a crash");
             }
         }

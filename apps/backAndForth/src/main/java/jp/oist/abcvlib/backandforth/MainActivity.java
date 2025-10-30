@@ -1,7 +1,7 @@
 package jp.oist.abcvlib.backandforth;
 
 import android.os.Bundle;
-import android.util.Log;
+import jp.oist.abcvlib.util.Logger;
 import jp.oist.abcvlib.core.AbcvlibActivity;
 /**
  * Android application showing connection to Robot3.1 PCB, and Android Sensors
@@ -24,7 +24,7 @@ public class MainActivity extends AbcvlibActivity {
     // Main loop for any application extending AbcvlibActivity. This is where you will put your main code
     @Override
     protected void abcvlibMainLoop(){
-        Log.i("BackAndForth", "Current command speed: " + speed);
+        Logger.i("BackAndForth", "Current command speed: " + speed);
         outputs.setWheelOutput(speed, speed, false, false);
         if (speed >= 1.00f || speed <= -1.00f) {
             increment = -increment;

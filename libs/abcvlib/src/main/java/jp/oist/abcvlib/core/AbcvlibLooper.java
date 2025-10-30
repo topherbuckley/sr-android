@@ -1,6 +1,6 @@
 package jp.oist.abcvlib.core;
 
-import android.util.Log;
+import jp.oist.abcvlib.util.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -250,7 +250,7 @@ public class AbcvlibLooper extends BaseIOIOLooper {
          used). The 5V tolerant pins are not necessary as the IOIO Board PWM is a 3.3V peak signal.
          */
 
-        Log.d("abcvlib", "AbcvlibLooper setup() started");
+        Logger.d("abcvlib", "AbcvlibLooper setup() started");
 
         final int INPUT1_RIGHT_WHEEL_PIN = 2;
         final int INPUT2_RIGHT_WHEEL_PIN = 3;
@@ -268,7 +268,7 @@ public class AbcvlibLooper extends BaseIOIOLooper {
         final int BATTERY_VOLTAGE = 34;
         final int COIL_VOLTAGE = 35;
 
-        Log.v(TAG, "ioio_ state = " + ioio_.getState().toString());
+        Logger.v(TAG, "ioio_ state = " + ioio_.getState().toString());
 
         /*
         Initializing all wheel controller values to low would result in both wheels being in
@@ -329,10 +329,10 @@ public class AbcvlibLooper extends BaseIOIOLooper {
             ioioPins.add(encoderBLeftWheel);
 
         }catch (ConnectionLostException e){
-            Log.e("abcvlib", "ConnectionLostException at AbcvlibLooper.setup()");
+            Logger.e("abcvlib", "ConnectionLostException at AbcvlibLooper.setup()");
             throw e;
         }
-        Log.d("abcvlib", "AbcvlibLooper setup() finished");
+        Logger.d("abcvlib", "AbcvlibLooper setup() finished");
         ioReadyListener.onIOReady();
     }
 
@@ -375,7 +375,7 @@ public class AbcvlibLooper extends BaseIOIOLooper {
             pwmControllerLeftWheel.setDutyCycle(dutyCycleLeftWheel);//converting from duty cycle to pulse width
         }
         catch (ConnectionLostException | InterruptedException e){
-            Log.e("abcvlib", "connection lost in AbcvlibLooper.loop");
+            Logger.e("abcvlib", "connection lost in AbcvlibLooper.loop");
         }
         IOIOConnectionManager.Thread.yield();
     }
@@ -387,7 +387,7 @@ public class AbcvlibLooper extends BaseIOIOLooper {
      */
     @Override
     public void disconnected() {
-        Log.d("abcvlib", "AbcvlibLooper disconnected");
+        Logger.d("abcvlib", "AbcvlibLooper disconnected");
     }
 
     /**
@@ -397,7 +397,7 @@ public class AbcvlibLooper extends BaseIOIOLooper {
      */
     @Override
     public void incompatible() {
-        Log.e("abcvlib", "Incompatible IOIO firmware version!");
+        Logger.e("abcvlib", "Incompatible IOIO firmware version!");
     }
 
     /**
@@ -452,7 +452,7 @@ public class AbcvlibLooper extends BaseIOIOLooper {
     public void turnOffWheels() throws ConnectionLostException {
         pwmControllerRightWheel.setDutyCycle(0);
         pwmControllerLeftWheel.setDutyCycle(0);
-        Log.d("abcvlib", "Turning off wheels");
+        Logger.d("abcvlib", "Turning off wheels");
     }
 
     void shutDown(){

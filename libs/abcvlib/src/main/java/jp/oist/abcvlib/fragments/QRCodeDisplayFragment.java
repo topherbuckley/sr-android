@@ -6,7 +6,7 @@ import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
-import android.util.Log;
+import jp.oist.abcvlib.util.Logger;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -75,7 +75,7 @@ public class QRCodeDisplayFragment extends Fragment {
         try {
             result = writer.encode(contents, BarcodeFormat.QR_CODE, img_width, img_height, hints);
         } catch (IllegalArgumentException iae) {
-            Log.d(TAG, "Unsupported format", iae);
+            Logger.d(TAG, "Unsupported format", iae);
             return null;
         }
         int width = result.getWidth();

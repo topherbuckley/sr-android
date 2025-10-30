@@ -1,7 +1,7 @@
 package jp.oist.abcvlib.core.learning;
 
 import android.content.Context;
-import android.util.Log;
+import jp.oist.abcvlib.util.Logger;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -136,7 +136,7 @@ public class Trial implements Runnable, ActionSelector, SocketListener {
 
     // End episode after some reward has been acheived or maxtimesteps has been reached
     protected void endEpisode() throws BrokenBarrierException, InterruptedException, IOException, RecordingWithoutTimeStepBufferException, ExecutionException {
-        Log.d("Episode", "End of episode:" + getEpisodeCount());
+        Logger.d("Episode", "End of episode:" + getEpisodeCount());
         // Waits for all image compression to finish prior to finishing flatbuffer
         long start = System.nanoTime();
         synchronized (timeStepDataBuffer.imgCompFuturesEpisode){
@@ -167,7 +167,7 @@ public class Trial implements Runnable, ActionSelector, SocketListener {
     }
 
     protected void endTrial() throws RecordingWithoutTimeStepBufferException, InterruptedException {
-        Log.i(TAG, "Need to handle end of trail here");
+        Logger.i(TAG, "Need to handle end of trail here");
         pausePublishers();
         publisherManager.stopPublishers();
         timeStepDataAssemblerFuture.cancel(false);
@@ -185,16 +185,16 @@ public class Trial implements Runnable, ActionSelector, SocketListener {
         //loadMappedFile...
         try {
             if (jsonHeader.get("content-encoding").equals("utf-8")){
-                Log.d(TAG, "Received text message from server");
+                Logger.d(TAG, "Received text message from server");
                 msgFromServer.flip();
                 byte[] bytes = new byte[(int) jsonHeader.get("content-length")];
                 msgFromServer.get(bytes);
                 String msg = new String(bytes, StandardCharsets.UTF_8);
-                Log.d(TAG, "Server says, \"" + msg + "\"");
+                Logger.d(TAG, "Server says, \"" + msg + "\"");
             }
             else if (jsonHeader.get("content-encoding").equals("binary")){
                 if (jsonHeader.get("content-type").equals("files")){
-                    Log.d(TAG, "Writing files to disk");
+                    Logger.d(TAG, "Writing files to disk");
                     JSONArray fileNames = (JSONArray) jsonHeader.get("file-names");
                     JSONArray fileLengths = (JSONArray) jsonHeader.get("file-lengths");
 
@@ -213,7 +213,7 @@ public class Trial implements Runnable, ActionSelector, SocketListener {
                     //todo
                 }
             }else{
-                Log.d(TAG, "Data from server does not contain modelVector content. Be sure to set content-encoding to \"modelVector\" in the python jsonHeader");
+                Logger.d(TAG, "Data from server does not contain modelVector content. Be sure to set content-encoding to \"modelVector\" in the python jsonHeader");
             }
         } catch (JSONException e) {
             ErrorHandler.eLog(TAG, "Something wrong with parsing the JSONheader from python", e, true);

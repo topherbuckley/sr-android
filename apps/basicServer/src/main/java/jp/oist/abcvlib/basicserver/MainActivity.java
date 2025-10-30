@@ -2,7 +2,7 @@ package jp.oist.abcvlib.basicserver;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.util.Log;
+import jp.oist.abcvlib.util.Logger;
 
 import com.google.flatbuffers.FlatBufferBuilder;
 
@@ -60,18 +60,18 @@ public class MainActivity extends Activity implements HttpConnection.HttpCallbac
     @Override
     public void onFileReceived(String filename, byte[] fileData) {
         // Handle the received file data
-        Log.d("HttpConnection", "Received file: " + filename + " of length: " + fileData.length);
+        Logger.d("HttpConnection", "Received file: " + filename + " of length: " + fileData.length);
     }
 
     @Override
     public void onSuccess(String response) {
         // Handle the received string response
-        Log.d("HttpConnection", "Received response: " + response);
+        Logger.d("HttpConnection", "Received response: " + response);
     }
 
     @Override
     public void onError(String error) {
         // Handle the error
-        Log.e("HttpConnection", "Error: " + error);
+        Logger.e("HttpConnection", "Error: " + error);
     }
 }

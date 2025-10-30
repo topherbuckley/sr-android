@@ -116,7 +116,7 @@ public class MainActivity extends AbcvlibActivity implements SerialReadyListener
     // Main loop for any application extending AbcvlibActivity. This is where you will put your main code
     @Override
     protected void abcvlibMainLoop(){
-//        Log.i("basicSubscriber", "Current command speed: " + speed);
+//        Logger.i("basicSubscriber", "Current command speed: " + speed);
         outputs.setWheelOutput(speed, speed, false, false);
         if (speed >= 1.00f || speed <= -1.00f) {
             increment = -increment;
@@ -126,20 +126,20 @@ public class MainActivity extends AbcvlibActivity implements SerialReadyListener
 
     @Override
     public void onBatteryVoltageUpdate(long timestamp, double voltage) {
-//        Log.i(TAG, "Battery Update: Voltage=" + voltage + " Timestemp=" + timestamp);
+//        Logger.i(TAG, "Battery Update: Voltage=" + voltage + " Timestemp=" + timestamp);
         guiUpdater.batteryVoltage = voltage; // make volitile
     }
 
     @Override
     public void onChargerVoltageUpdate(long timestamp, double chargerVoltage, double coilVoltage) {
-//        Log.i(TAG, "Charger Update: Voltage=" + voltage + " Timestemp=" + timestamp);
+//        Logger.i(TAG, "Charger Update: Voltage=" + voltage + " Timestemp=" + timestamp);
         guiUpdater.chargerVoltage = chargerVoltage;
         guiUpdater.coilVoltage = coilVoltage;
     }
 
     @Override
     public void onOrientationUpdate(long timestamp, double thetaRad, double angularVelocityRad) {
-//        Log.i(TAG, "Orientation Data Update: Timestamp=" + timestamp + " thetaRad=" + thetaRad
+//        Logger.i(TAG, "Orientation Data Update: Timestamp=" + timestamp + " thetaRad=" + thetaRad
 //                + " angularVelocity=" + angularVelocityRad);
 //
         // You can also convert them to degrees using the following static utility methods.
@@ -155,7 +155,7 @@ public class MainActivity extends AbcvlibActivity implements SerialReadyListener
                                   double wheelSpeedInstantL, double wheelSpeedInstantR,
                                   double wheelSpeedBufferedL, double wheelSpeedBufferedR,
                                   double wheelSpeedExpAvgL, double wheelSpeedExpAvgR) {
-//        Log.i(TAG, "Wheel Data Update: Timestamp=" + timestamp + " countLeft=" + countLeft +
+//        Logger.i(TAG, "Wheel Data Update: Timestamp=" + timestamp + " countLeft=" + countLeft +
 //                " countRight=" + countRight);
 //        double distanceLeft = WheelData.countsToDistance(countLeft);
         guiUpdater.wheelCountL = wheelCountL;
@@ -183,7 +183,7 @@ public class MainActivity extends AbcvlibActivity implements SerialReadyListener
         for (double v : arraySlice) {
             arraySliceString = arraySliceString.concat(df.format(v)) + ", ";
         }
-//        Log.i("MainActivity", "Microphone Data Update: First 10 Samples=" + arraySliceString +
+//        Logger.i("MainActivity", "Microphone Data Update: First 10 Samples=" + arraySliceString +
 //                " of " + numSamples + " total samples");
         guiUpdater.audioDataString = arraySliceString;
     }
@@ -198,7 +198,7 @@ public class MainActivity extends AbcvlibActivity implements SerialReadyListener
      */
     @Override
     public void onImageDataRawUpdate(long timestamp, int width, int height, Bitmap bitmap) {
-//        Log.i(TAG, "Image Data Update: Timestamp=" + timestamp + " dims=" + width + " x "
+//        Logger.i(TAG, "Image Data Update: Timestamp=" + timestamp + " dims=" + width + " x "
 //                + height);
         double frameRate = 1.0 / ((System.nanoTime() - lastFrameTime) / 1000000000.0);
         lastFrameTime = System.nanoTime();

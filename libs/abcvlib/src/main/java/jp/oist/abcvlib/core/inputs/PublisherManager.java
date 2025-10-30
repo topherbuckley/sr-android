@@ -1,6 +1,6 @@
 package jp.oist.abcvlib.core.inputs;
 
-import android.util.Log;
+import jp.oist.abcvlib.util.Logger;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -27,37 +27,37 @@ public class PublisherManager {
 
     //========================================Phase 0===============================================
     public PublisherManager add(Publisher<?> publisher){
-        Log.i(TAG, "Adding publisher: " + publisher.getClass().getName());
+        Logger.i(TAG, "Adding publisher: " + publisher.getClass().getName());
         publishers.add(publisher);
         phaser.register();
         return this;
     }
 
     public void onPublisherPermissionsGranted(Publisher<?> grantedPublisher) { // Accept the publisher
-        Log.i(TAG, "Publisher permissions granted for: " + grantedPublisher.getClass().getName());
+        Logger.i(TAG, "Publisher permissions granted for: " + grantedPublisher.getClass().getName());
         phaser.arriveAndDeregister();
     }
 
     //========================================Phase 1===============================================
     private void initialize(@NotNull Publisher<?> publisher){
-        Log.i(TAG, "Registering publisher for phase 1: " + publisher.getClass().getName());
+        Logger.i(TAG, "Registering publisher for phase 1: " + publisher.getClass().getName());
         phaser.register();
         publisher.start();
     }
 
     public void onPublisherInitialized() {
-        Log.i(TAG, "Publisher deregistering: " + Thread.currentThread().getStackTrace()[2].getClassName());
+        Logger.i(TAG, "Publisher deregistering: " + Thread.currentThread().getStackTrace()[2].getClassName());
         phaser.arriveAndDeregister();
     }
 
     public void initializePublishers(){
         phaser.arrive();
-        Log.i(TAG, "Starting initializePublishers with " + publishers.size() + " publishers");
-        Log.i(TAG, "Waiting on all publishers to initialize before starting");
+        Logger.i(TAG, "Starting initializePublishers with " + publishers.size() + " publishers");
+        Logger.i(TAG, "Waiting on all publishers to initialize before starting");
         phaser.awaitAdvance(0); // Waits to initialize if not finished with initPhase
-        Log.i(TAG, "Phase 0 complete, starting publisher initialization");
+        Logger.i(TAG, "Phase 0 complete, starting publisher initialization");
         for (Publisher<?> publisher: publishers){
-            Log.i(TAG, "Initializing publisher: " + publisher.getClass().getName());
+            Logger.i(TAG, "Initializing publisher: " + publisher.getClass().getName());
             initialize(publisher);
         }
     }
@@ -67,9 +67,9 @@ public class PublisherManager {
         phaser.arrive();
         ExecutorService executor = Executors.newSingleThreadExecutor();
         executor.submit(() -> {
-            Log.i(TAG, "Waiting on phase 1 to finish before starting");
+            Logger.i(TAG, "Waiting on phase 1 to finish before starting");
             phaser.awaitAdvance(1);
-            Log.i(TAG, "All publishers initialized. Starting publishers");
+            Logger.i(TAG, "All publishers initialized. Starting publishers");
             for (Publisher<?> publisher: publishers){
                 publisher.resume();
             }

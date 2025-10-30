@@ -4,7 +4,7 @@ import android.content.Context;
 import android.content.res.AssetManager;
 import android.os.Debug;
 import android.os.Environment;
-import android.util.Log;
+import jp.oist.abcvlib.util.Logger;
 import android.widget.Toast;
 
 import java.io.BufferedReader;
@@ -44,7 +44,7 @@ public class FileOps {
                         bw.write(content);
                         bw.close();
                     } else{
-                        Log.d(TAG, "Unable to create DataDir directory");
+                        Logger.d(TAG, "Unable to create DataDir directory");
                     }
                 }
             }
@@ -65,7 +65,7 @@ public class FileOps {
             if (!file.exists() || deleted){
                 path.mkdirs();
                 created = file.createNewFile();
-                Log.v(TAG, "Writing " + file.getAbsolutePath());
+                Logger.v(TAG, "Writing " + file.getAbsolutePath());
                 FileOutputStream fileOutputStream = new FileOutputStream(file.getAbsolutePath(),false);
                 fileOutputStream.write(content);
                 fileOutputStream.close();
@@ -88,7 +88,7 @@ public class FileOps {
             if (!file.exists() || deleted){
                 path.mkdirs();
                 created = file.createNewFile();
-                Log.v(TAG, "Writing " + file.getAbsolutePath());
+                Logger.v(TAG, "Writing " + file.getAbsolutePath());
                 FileOutputStream fileOutputStream = new FileOutputStream(file.getAbsolutePath(),false);
 
                 byte[] buffer = new byte[1024];
@@ -217,7 +217,7 @@ public class FileOps {
         try {
             boolean deleted = false;
             boolean created = false;
-            Log.d(TAG, "Within HeapDump");
+            Logger.d(TAG, "Within HeapDump");
             File file=new File( context.getFilesDir() + File.separator + "dump.hprof");
             if (file.exists()){
                 deleted = file.delete();

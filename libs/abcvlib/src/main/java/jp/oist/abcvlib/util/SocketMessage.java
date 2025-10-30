@@ -1,6 +1,6 @@
 package jp.oist.abcvlib.util;
 
-import android.util.Log;
+import jp.oist.abcvlib.util.Logger;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -50,23 +50,23 @@ public class SocketMessage {
 
     public void process_events(SelectionKey selectionKey){
         SocketChannel sc = (SocketChannel) selectionKey.channel();
-//        Log.i(TAG, "process_events");
+//        Logger.i(TAG, "process_events");
         try{
             if (selectionKey.isConnectable()){
                 boolean connected = sc.finishConnect();
                 if (connected){
-                    Log.d(TAG, "Finished connecting to " + ((SocketChannel) selectionKey.channel()).getRemoteAddress());
-                    Log.v(TAG, "socketChannel.isConnected ? : " + sc.isConnected());
+                    Logger.d(TAG, "Finished connecting to " + ((SocketChannel) selectionKey.channel()).getRemoteAddress());
+                    Logger.v(TAG, "socketChannel.isConnected ? : " + sc.isConnected());
                     int ops = SelectionKey.OP_WRITE;
                     sc.register(selectionKey.selector(), ops, selectionKey.attachment());
                 }
             }
             if (selectionKey.isWritable()){
-//                Log.i(TAG, "write event");
+//                Logger.i(TAG, "write event");
                 write(selectionKey);
             }
             if (selectionKey.isReadable()){
-//                Log.i(TAG, "read event");
+//                Logger.i(TAG, "read event");
                 read(selectionKey);
 
 //                int ops = SelectionKey.OP_WRITE;
@@ -104,7 +104,7 @@ public class SocketMessage {
                 else if (!msgReadComplete){
                     process_msgContent(selectionKey);
                 } else {
-                    Log.e(TAG, "bitsRead but don't know what to do with them");
+                    Logger.e(TAG, "bitsRead but don't know what to do with them");
                 }
             }
             // If msgContent is zero this handles it.
@@ -119,7 +119,7 @@ public class SocketMessage {
         if (!writeBufferVector.isEmpty()){
             SocketChannel socketChannel = (SocketChannel) selectionKey.channel();
 
-//            Log.v(TAG, "writeBufferVector contains data");
+//            Logger.v(TAG, "writeBufferVector contains data");
 
             if (jsonHeaderWrite == null){
                 // This is because the data in this ByteBuffer does NOT start at 0, but at
@@ -128,7 +128,7 @@ public class SocketMessage {
                 int numBytesToWrite = writeBufferVector.get(0).limit() - writeBufferVector.get(0).position();
 
                 // Create JSONHeader containing length of episode in Bytes
-                Log.v(TAG, "generating jsonheader");
+                Logger.v(TAG, "generating jsonheader");
                 jsonHeaderWrite = generate_jsonheader(numBytesToWrite);
                 byte[] jsonBytes = jsonHeaderWrite.toString().getBytes(StandardCharsets.UTF_8);
 //                ByteBuffer jsonByteBuffer = ByteBuffer.wrap(jsonBytes); //todo optimize buffer length
@@ -144,7 +144,7 @@ public class SocketMessage {
                 // Create new buffer that compiles protoHeader, JsonHeader, and Episode
                 _send_buffer = ByteBuffer.allocate(Integer.BYTES + jsonLength);
 
-                Log.v(TAG, "Assembling _send_buffer");
+                Logger.v(TAG, "Assembling _send_buffer");
                 // Assemble all bytes and flip to prepare to read
                 // todo try to write the episode directly rather than copy it.
                 _send_buffer.putInt(jsonLength);
@@ -157,7 +157,7 @@ public class SocketMessage {
 
                 int total = _send_buffer.limit();
 
-                Log.d(TAG, "Writing JSONHeader of length " + total + " bytes to server ...");
+                Logger.d(TAG, "Writing JSONHeader of length " + total + " bytes to server ...");
 
                 // Write Bytes to socketChannel
                 if (_send_buffer.remaining() > 0){
@@ -165,7 +165,7 @@ public class SocketMessage {
                 }
 
                 int msgSize = writeBufferVector.get(0).limit() / 1000000;
-                Log.d(TAG, "Writing message of length " + msgSize + "MB to server ...");
+                Logger.d(TAG, "Writing message of length " + msgSize + "MB to server ...");
 
             } else{
                 // Write Bytes to socketChannel
@@ -181,8 +181,8 @@ public class SocketMessage {
                 double timeTaken = (System.nanoTime() - socketWriteTimeStart) * 10e-10;
                 DecimalFormat df = new DecimalFormat();
                 df.setMaximumFractionDigits(2);
-                Log.i(TAG, "Sent " + total + "kb in " + df.format(timeTaken) + "s");
-                Log.i(TAG, "Mean transfer rate of " + df.format(total/timeTaken) + " MB/s");
+                Logger.i(TAG, "Sent " + total + "kb in " + df.format(timeTaken) + "s");
+                Logger.i(TAG, "Mean transfer rate of " + df.format(total/timeTaken) + " MB/s");
 
                 // Clear sending buffer
                 _send_buffer.clear();
@@ -192,7 +192,7 @@ public class SocketMessage {
                 jsonHeaderWrite = null;
 
                 // Set socket to read now that writing has finished.
-                Log.d(TAG, "Reading from server ...");
+                Logger.d(TAG, "Reading from server ...");
                 int ops = SelectionKey.OP_READ; //todo might need to reconnect if send buffer empties
                 sc.register(selectionKey.selector(), ops, selectionKey.attachment());
             }
@@ -204,7 +204,7 @@ public class SocketMessage {
         int percentDone = (int) Math.ceil(((double) totalNumBytesToWrite - (double) writeBufferVector.get(0).remaining())
                 / (double) totalNumBytesToWrite * 100);
         int total = totalNumBytesToWrite / 1000000;
-        Log.d(TAG, "Sent " + percentDone + "% of " + total + "Mb to " + socketChannel.getRemoteAddress());
+        Logger.d(TAG, "Sent " + percentDone + "% of " + total + "Mb to " + socketChannel.getRemoteAddress());
     }
 
     private int findOptimalBufferSize(int dataSize){
@@ -233,7 +233,7 @@ public class SocketMessage {
      * read from the buffer again until it fills past length hdrlen.
      */
     private void process_protoheader() {
-        Log.v(TAG, "processing protoheader");
+        Logger.v(TAG, "processing protoheader");
         int hdrlen = 2;
         if (_recv_buffer.position() >= hdrlen){
             _recv_buffer.flip(); //pos at 0 and limit set to bitsRead
@@ -243,7 +243,7 @@ public class SocketMessage {
 
             _recv_buffer.compact();
 
-            Log.v(TAG, "finished processing protoheader");
+            Logger.v(TAG, "finished processing protoheader");
         }
     }
 
@@ -253,7 +253,7 @@ public class SocketMessage {
      */
     private void process_jsonheader() throws JSONException {
 
-        Log.v(TAG, "processing jsonheader");
+        Logger.v(TAG, "processing jsonheader");
 
         // If you have enough bytes in the _recv_buffer to write out the jsonHeader
         if (_jsonheader_len - _recv_buffer.position() <= 0){
@@ -261,7 +261,7 @@ public class SocketMessage {
             _recv_buffer.get(jsonHeaderBytes);
             // jsonheaderBuffer should now be full and ready to convert to a JSONobject
             jsonHeaderRead = new JSONObject(new String(jsonHeaderBytes));
-            Log.d(TAG, "JSONheader from server: " + jsonHeaderRead.toString());
+            Logger.d(TAG, "JSONheader from server: " + jsonHeaderRead.toString());
 
             try{
                 int msgLength = (int) jsonHeaderRead.get("content-length");
@@ -306,7 +306,7 @@ public class SocketMessage {
             double timeTaken = (System.nanoTime() - socketReadTimeStart) * 10e-10;
             DecimalFormat df = new DecimalFormat();
             df.setMaximumFractionDigits(2);
-            Log.i(TAG, "Entire message containing " + totalBytes + "Mb recv'd in " + df.format(timeTaken) + "s");
+            Logger.i(TAG, "Entire message containing " + totalBytes + "Mb recv'd in " + df.format(timeTaken) + "s");
 
             msgReadComplete = true;
 
@@ -333,7 +333,7 @@ public class SocketMessage {
         try{
             success = writeBufferVector.add(episode); // does pos or limit change in either episode or writeBufferVector at this point?
             this.doneSignal = doneSignal;
-            Log.v(TAG, "Added data to writeBuffer");
+            Logger.v(TAG, "Added data to writeBuffer");
             int ops = SelectionKey.OP_WRITE;
             socketWriteTimeStart = System.nanoTime();
             sc.register(selector, ops, this);

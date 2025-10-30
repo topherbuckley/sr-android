@@ -1,4 +1,5 @@
 apply plugin: 'de.undercouch.download'
+apply from: rootProject.file("common-buildconfig.gradle")
 
 dependencies {
     api "com.github.ytai.ioio:IOIOLibAndroid:6.1.0"
@@ -11,6 +12,15 @@ dependencies {
 
 android {
     namespace 'jp.oist.abcvlib.core'
+    buildFeatures {
+        buildConfig = true
+    }
+    buildTypes {
+        optimized {
+            // shrinkResources not allowed for libs → disable it
+            shrinkResources false
+        }
+    }
 }
 
 project.ext.ASSET_DIR = projectDir.toString() + '/src/main/assets'

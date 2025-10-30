@@ -1,6 +1,6 @@
 package jp.oist.abcvlib.util;
 
-import android.util.Log;
+import jp.oist.abcvlib.util.Logger;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -73,18 +73,18 @@ public class SocketConnectionManager implements Runnable{
             sc.configureBlocking(false);
 //            sc.setOption(SO_SNDBUF, 2^27);
 
-            Log.d(TAG, "Initializing connection with " + inetSocketAddress);
+            Logger.d(TAG, "Initializing connection with " + inetSocketAddress);
             boolean connected = sc.connect(inetSocketAddress);
 
             socketMessage = new SocketMessage(socketListener, sc, selector);
-            Log.v(TAG, "socketChannel.isConnected ? : " + sc.isConnected());
+            Logger.v(TAG, "socketChannel.isConnected ? : " + sc.isConnected());
 
             socketMessage.addEpisodeToWriteBuffer(episode, doneSignal);
 
-            Log.v(TAG, "registering with selector to connect");
+            Logger.v(TAG, "registering with selector to connect");
             int ops = SelectionKey.OP_CONNECT;
             SelectionKey selectionKey = sc.register(selector, ops, socketMessage);
-            Log.v(TAG, "Registered with selector");
+            Logger.v(TAG, "Registered with selector");
 
         } catch (IOException | ClosedSelectorException | IllegalBlockingModeException
                 | CancelledKeyException | IllegalArgumentException e) {
@@ -98,7 +98,7 @@ public class SocketConnectionManager implements Runnable{
      */
     public void close(){
         try {
-            Log.v(TAG, "Closing connection: " + sc.getRemoteAddress());
+            Logger.v(TAG, "Closing connection: " + sc.getRemoteAddress());
             selector.close();
             sc.close();
         } catch (IOException e) {

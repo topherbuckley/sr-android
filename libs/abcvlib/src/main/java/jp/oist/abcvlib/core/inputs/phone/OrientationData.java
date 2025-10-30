@@ -8,7 +8,7 @@ import android.hardware.SensorManager;
 import android.os.Build;
 import android.os.Handler;
 import android.os.HandlerThread;
-import android.util.Log;
+import jp.oist.abcvlib.util.Logger;
 
 import java.util.ArrayList;
 
@@ -202,25 +202,25 @@ public class OrientationData extends Publisher<OrientationDataSubscriber> implem
         if (rotation_sensor != null){
             sensorManager.registerListener(this, rotation_sensor, SensorManager.SENSOR_DELAY_FASTEST, handler);
         } else {
-            Log.e("SensorTesting", "No Default rotation_sensor Available.");
+            Logger.e("SensorTesting", "No Default rotation_sensor Available.");
         }
         // Check if gyro exists before trying to turn on the listener
         if (gyroscope != null){
             sensorManager.registerListener(this, gyroscope, SensorManager.SENSOR_DELAY_FASTEST, handler);
         } else {
-            Log.e("SensorTesting", "No Default gyroscope Available.");
+            Logger.e("SensorTesting", "No Default gyroscope Available.");
         }
         // Check if rotation_sensor exists before trying to turn on the listener
         if (accelerometer != null){
             sensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_FASTEST, handler);
         } else {
-            Log.e("SensorTesting", "No Default accelerometer Available.");
+            Logger.e("SensorTesting", "No Default accelerometer Available.");
         }
         // Check if rotation_sensor exists before trying to turn on the listener
         if (accelerometer_uncalibrated != null){
             sensorManager.registerListener(this, accelerometer_uncalibrated, SensorManager.SENSOR_DELAY_FASTEST, handler);
         } else {
-            Log.e("SensorTesting", "No Default accelerometer_uncalibrated Available.");
+            Logger.e("SensorTesting", "No Default accelerometer_uncalibrated Available.");
         }
     }
 

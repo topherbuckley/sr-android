@@ -1,6 +1,6 @@
 package jp.oist.abcvlib.serverlearning;
 
-import android.util.Log;
+import jp.oist.abcvlib.util.Logger;
 
 import java.io.IOException;
 import java.util.concurrent.BrokenBarrierException;
@@ -35,7 +35,7 @@ public class MyTrial extends Trial implements ActionSelector{
 
         // Add your selected actions to the TimeStepDataBuffer for record
         data.getActions().add(motionAction, commAction);
-        Log.i("myTrail", "Current motionAction: " + motionAction.getActionName());
+        Logger.i("myTrail", "Current motionAction: " + motionAction.getActionName());
         outputs.setWheelOutput(motionAction.getLeftWheelPWM(),
                 motionAction.getRightWheelPWM(),
                 motionAction.getLeftWheelBrake(),
@@ -47,28 +47,28 @@ public class MyTrial extends Trial implements ActionSelector{
     @Override
     protected void startTrail() {
         // Do stuff here
-        Log.v("MyTrail", "startTrail");
+        Logger.v("MyTrail", "startTrail");
         super.startTrail();
     }
 
     @Override
     public void startEpisode() {
         // Do stuff here
-        Log.v("MyTrail", "startEpisode");
+        Logger.v("MyTrail", "startEpisode");
         super.startEpisode();
     }
 
     @Override
     protected void endEpisode() throws BrokenBarrierException, InterruptedException, IOException, RecordingWithoutTimeStepBufferException, ExecutionException {
         // Do stuff here
-        Log.v("MyTrail", "endEpisode");
+        Logger.v("MyTrail", "endEpisode");
         super.endEpisode();
     }
 
     @Override
     protected void endTrial() throws RecordingWithoutTimeStepBufferException, InterruptedException {
         // Do stuff here
-        Log.v("MyTrail", "endTrail");
+        Logger.v("MyTrail", "endTrail");
         outputs.setWheelOutput(0,0,true,true);
         super.endTrial();
     }
