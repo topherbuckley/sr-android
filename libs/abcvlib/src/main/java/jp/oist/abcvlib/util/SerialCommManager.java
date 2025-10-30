@@ -62,6 +62,7 @@ public class SerialCommManager {
                 if (cnt == 100) {
                     durationAndroid = (System.nanoTime() - startTimeAndroid) / 100;
                     cnt = 0;
+                    startTimeAndroid = System.nanoTime();
                     // convert from nanoseconds to microseconds
                     Log.i("AndroidSide", "Average time per command: " + durationAndroid / 1000 + "us");
                 }
