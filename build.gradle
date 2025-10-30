@@ -140,14 +140,37 @@ subprojects {
                 versionCode = 1
             }
         }
-        buildTypes {
-            release {
-                minifyEnabled true
+        if (plugins.hasPlugin('com.android.application')) {
+            android {
+                buildTypes {
+                    optimized {
+                        initWith buildTypes.debug
+                        minifyEnabled true
+                        shrinkResources true
+                        proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+                        signingConfig null
+                    }
+                    debug {
+                        minifyEnabled false
+                    }
+                }
             }
-            debug {
-                minifyEnabled false
+        } else if (plugins.hasPlugin('com.android.library')) {
+            android {
+                buildTypes {
+                    optimized {
+                        initWith buildTypes.debug
+                        minifyEnabled true
+                        // ❌ shrinkResources not allowed here
+                        proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+                    }
+                    debug {
+                        minifyEnabled false
+                    }
+                }
             }
         }
+
         ndkVersion = "21.0.6113669"
     }
 }
