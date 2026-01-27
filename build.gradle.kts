@@ -79,7 +79,7 @@ subprojects {
         "implementation"("androidx.appcompat:appcompat:1.3.1")
         "implementation"("androidx.activity:activity:1.3.1")
         "implementation"("androidx.fragment:fragment:1.3.6")
-        "implementation"("androidx.core:core-ktx:1.6.0")
+        "implementation"("androidx.core:core-ktx:1.17.0")
         "implementation"("androidx.navigation:navigation-fragment:2.3.5")
         "implementation"("androidx.navigation:navigation-ui:2.3.5")
         "implementation"("org.tensorflow:tensorflow-lite-task-vision:0.4.0")
