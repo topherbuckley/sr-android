@@ -113,6 +113,11 @@ subprojects {
     pluginManager.withPlugin("com.android.application") {
         configureAndroidExtension()
     }
+    pluginManager.withPlugin("org.jetbrains.kotlin.android") {
+        configure<org.jetbrains.kotlin.gradle.dsl.KotlinAndroidProjectExtension> {
+            jvmToolchain(17)
+        }
+    }
 }
 
 // In Kotlin DSL, android {} isn't directly available in subprojects {}
@@ -123,8 +128,8 @@ fun Project.configureAndroidExtension() {
     extensions.configure<com.android.build.gradle.BaseExtension>("android") {
         namespace = "jp.oist.abcvlib"
         compileOptions {
-            sourceCompatibility = JavaVersion.VERSION_1_8
-            targetCompatibility = JavaVersion.VERSION_1_8
+            sourceCompatibility = JavaVersion.VERSION_17
+            targetCompatibility = JavaVersion.VERSION_17
         }
         defaultConfig {
             compileSdkVersion(36)
