@@ -15,10 +15,7 @@ lifecycle = "2.10.0"
 navigation = "2.9.6"
 
 # CameraX
-cameraX = "1.1.0-alpha07"
-cameraXView = "1.0.0-alpha27"
-cameraXExtensions = "1.0.0-alpha27"
-
+cameraX = "1.5.2"
 # TensorFlow Lite
 tensorflowLiteTaskVision = "0.4.0"
 tensorflowLiteGpu = "2.9.0"
@@ -53,8 +50,8 @@ androidx-navigation-ui = { module = "androidx.navigation:navigation-ui", version
 # CameraX
 androidx-camera-camera2 = { module = "androidx.camera:camera-camera2", version.ref = "cameraX" }
 androidx-camera-lifecycle = { module = "androidx.camera:camera-lifecycle", version.ref = "cameraX" }
-androidx-camera-view = { module = "androidx.camera:camera-view", version.ref = "cameraXView" }
-androidx-camera-extensions = { module = "androidx.camera:camera-extensions", version.ref = "cameraXExtensions" }
+androidx-camera-view = { module = "androidx.camera:camera-view", version.ref = "cameraX" }
+androidx-camera-extensions = { module = "androidx.camera:camera-extensions", version.ref = "cameraX" }
 # TensorFlow Lite
 tensorflow-lite-task-vision = { module = "org.tensorflow:tensorflow-lite-task-vision", version.ref = "tensorflowLiteTaskVision" }
 tensorflow-lite-gpu-delegate-plugin = { module = "org.tensorflow:tensorflow-lite-gpu-delegate-plugin", version.ref = "tensorflowLiteTaskVision" }
