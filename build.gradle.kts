@@ -52,30 +52,6 @@ subprojects {
         }
     }
 
-    val libs = rootProject.extensions.getByType<VersionCatalogsExtension>().named("libs")
-
-    dependencies {
-        // Navigation
-        "implementation"(libs.findLibrary("androidx-navigation-fragment").get())
-        "implementation"(libs.findLibrary("androidx-navigation-ui").get())
-        // CameraX
-        "implementation"(libs.findLibrary("androidx-camera-camera2").get())
-        "implementation"(libs.findLibrary("androidx-camera-lifecycle").get())
-        "implementation"(libs.findLibrary("androidx-camera-view").get())
-        "implementation"(libs.findLibrary("androidx-camera-extensions").get())
-        // TensorFlow Lite
-        "implementation"(libs.findLibrary("tensorflow-lite-task-vision").get())
-        "implementation"(libs.findLibrary("tensorflow-lite-gpu-delegate-plugin").get())
-        "implementation"(libs.findLibrary("tensorflow-lite-gpu").get())
-        // ZXing (QR/Barcode)
-        "implementation"(libs.findLibrary("zxing-core").get())
-        "implementation"(libs.findLibrary("zxing-android-integration").get())
-        // Other
-        "implementation"(libs.findLibrary("flatbuffers").get())
-        "implementation"(libs.findLibrary("android-permissions").get())
-        "implementation"(libs.findLibrary("usb-serial").get())
-        "implementation"(libs.findLibrary("abcvlib-fbclasses").get())
-    }
 
     // Configure Android block immediately after plugin application (not in afterEvaluate)
     pluginManager.withPlugin("com.android.library") {

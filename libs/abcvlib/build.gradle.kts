@@ -4,12 +4,41 @@ plugins {
 }
 
 dependencies {
+    // Ui
+    implementation(libs.androidx.appcompat)
+    implementation(libs.androidx.activity)
+    implementation(libs.androidx.fragment)
+    implementation(libs.androidx.constraintlayout)
+    implementation(libs.material)
+    // Architecture
+    implementation(libs.androidx.lifecycle.livedata)
+    implementation(libs.androidx.lifecycle.viewmodel)
+    // Navigation
+    implementation(libs.androidx.navigation.fragment)
+    implementation(libs.androidx.navigation.ui)
+    // IOIOLibAndroid
     api(libs.ioio.android)
     implementation(libs.ioio.accessory)
     implementation(libs.ioio.bluetooth)
     implementation(libs.ioio.device)
-    implementation(libs.android.permissions)
+    // CameraX
+    api(libs.androidx.camera.camera2)
+    api(libs.androidx.camera.lifecycle)
+    api(libs.androidx.camera.view)
+    implementation(libs.androidx.camera.extensions)
+    // TensorFlow Lite
+    api(libs.tensorflow.lite.task.vision)
+    implementation(libs.tensorflow.lite.gpu.delegate.plugin)
+    implementation(libs.tensorflow.lite.gpu)
+    // ZXing (QR/Barcode)
+    implementation(libs.zxing.core)
+    implementation(libs.zxing.android.integration)
+    // Other
+    implementation(libs.usb.serial)
     implementation(libs.commons.collections4)
+    api(libs.flatbuffers)
+    api(libs.android.permissions)
+    api(libs.abcvlib.fbclasses)
 }
 
 android {
