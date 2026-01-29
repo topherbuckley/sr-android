@@ -15,9 +15,6 @@ allprojects {
 }
 
 subprojects {
-    apply(plugin = "maven-publish")
-    apply(plugin = "signing")
-
     if ((gradle.extra["androidLibs"] as List<*>).any { it == project.name }) {
         apply(plugin = "com.android.library")
         apply(plugin = "kotlin-android") // needed for YuvToRgbConverter

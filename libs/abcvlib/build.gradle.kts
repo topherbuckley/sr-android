@@ -7,6 +7,8 @@ import jp.oist.abcvlib.loadNetworkConfig
 plugins {
     alias(libs.plugins.oist.library)
     alias(libs.plugins.undercouch.download)
+    `maven-publish`
+    signing
 }
 
 dependencies {
