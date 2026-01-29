@@ -2,6 +2,7 @@ import jp.oist.abcvlib.AppVersioning.gitHash
 import jp.oist.abcvlib.AppVersioning.isDirty
 import jp.oist.abcvlib.AppVersioning.isTagged
 import jp.oist.abcvlib.AppVersioning.scmTag
+import jp.oist.abcvlib.loadNetworkConfig
 
 plugins {
     alias(libs.plugins.oist.library)
@@ -50,6 +51,11 @@ android {
     namespace = "jp.oist.abcvlib.core"
     buildFeatures {
         buildConfig = true
+    }
+    defaultConfig {
+        val networkConfig = loadNetworkConfig(rootDir)
+        buildConfigField("String", "IP", "\"${networkConfig.ip}\"")
+        buildConfigField("int", "PORT", "${networkConfig.port}")
     }
     buildTypes {
         getByName("optimized") {

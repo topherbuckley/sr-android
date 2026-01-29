@@ -1,5 +1,3 @@
-import groovy.json.JsonSlurper
-
 plugins {
     alias(libs.plugins.android.application) apply false
     alias(libs.plugins.android.library) apply false
@@ -8,20 +6,6 @@ plugins {
 }
 
 allprojects {
-    var jsonFile = file("$rootDir/config.json")
-    if (!jsonFile.exists()) {
-        jsonFile = file("$rootDir/config.template.json")
-    }
-    val pythonconfig = JsonSlurper().parseText(jsonFile.readText()) as Map<*, *>
-    val custom = pythonconfig["CUSTOM"] as? Map<*, *>
-    if (custom != null) {
-        extra["ip"] = custom["ip"]
-        extra["port"] = custom["port"]
-    } else {
-        val default = pythonconfig["DEFAULT"] as Map<*, *>
-        extra["ip"] = default["ip"]
-        extra["port"] = default["port"]
-    }
     // Check for GITHUB_USER and GITHUB_TOKEN environment variables
     if (System.getenv("GITHUB_USER").isNullOrEmpty() || System.getenv("GITHUB_TOKEN")
             .isNullOrEmpty()
@@ -75,12 +59,6 @@ fun Project.configureAndroidExtension() {
             buildToolsVersion = "35.0.0"
             minSdk = 30
             targetSdk = 36
-
-            val ip = rootProject.extra["ip"]
-            val port = rootProject.extra["port"]
-            buildConfigField("String", "IP", "\"$ip\"")
-            buildConfigField("int", "PORT", "$port")
-
         }
 
         ndkVersion = "21.0.6113669"
