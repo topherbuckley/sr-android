@@ -2,11 +2,11 @@ import jp.oist.abcvlib.AppVersioning.gitHash
 import jp.oist.abcvlib.AppVersioning.isDirty
 import jp.oist.abcvlib.AppVersioning.isTagged
 import jp.oist.abcvlib.AppVersioning.scmTag
+import jp.oist.abcvlib.ModelDownload
 import jp.oist.abcvlib.loadNetworkConfig
 
 plugins {
     alias(libs.plugins.oist.library)
-    alias(libs.plugins.undercouch.download)
     `maven-publish`
     signing
 }
@@ -72,11 +72,9 @@ android {
     }
 }
 
-project.extra["ASSET_DIR"] = "${projectDir}/src/main/assets"
-
 // Download default models; if you wish to use your own models then
 // place them in the "assets" directory and comment out this line.
-apply(from = "download_models.gradle")
+ModelDownload.configure(project)
 
 tasks.withType<GenerateMavenPom>().configureEach {
     doFirst {
