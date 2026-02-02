@@ -32,7 +32,7 @@ class AndroidLibraryConventionPlugin : Plugin<Project> {
                 }
 
                 configureKotlinAndroid(this)
-                configureBuildTypes(this)
+                //configureBuildTypes(this)
             }
 
             dependencies {

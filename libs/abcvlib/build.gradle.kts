@@ -59,17 +59,6 @@ android {
         buildConfigField("String", "IP", "\"${networkConfig.ip}\"")
         buildConfigField("int", "PORT", "${networkConfig.port}")
     }
-    buildTypes {
-        getByName("optimized") {
-            // shrinkResources not allowed for libs → disable it
-            isShrinkResources = false
-            isMinifyEnabled = true
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                rootProject.file("proguard-rules.pro")
-            )
-        }
-    }
 }
 
 // Download default models; if you wish to use your own models then
