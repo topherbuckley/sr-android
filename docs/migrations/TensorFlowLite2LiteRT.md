@@ -1,0 +1,3 @@
+# TensorFlowLite2LiteRT
+
+Migrate the existing TensorFlow Lite implementation to LiteRT. This includes updating model loading, inference paths, and associated preprocessing/postprocessing code to match LiteRT’s APIs and performance characteristics. The migration is expected to improve execution efficiency, reduce binary size, and modernize the ML stack for long-term maintainability.
