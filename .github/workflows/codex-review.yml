@@ -10,7 +10,7 @@ permissions:
 
 jobs:
   codex-review:
-    if: github.event.pull_request.author_association == 'MEMBER'
+    if: contains(fromJSON('["MEMBER","OWNER"]'), github.event.pull_request.author_association)
     runs-on: ubuntu-latest
     steps:
       - name: Checkout PR merge ref
