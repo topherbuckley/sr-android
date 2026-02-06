@@ -5,7 +5,8 @@ Scope
 - No drive‑by changes (formatting/typos/unrelated fixes). Ask for a separate issue/PR.
 
 Migration guides
-- If a PR references a milestone or migration guide, verify compliance with it.
+- If a PR has a milestone label, map it to `docs/migrations/NN-<Title>.md` and use that file as the review checklist.
+- If needed, use `gh` CLI to fetch the PR’s milestone/labels to select the correct guide.
 - If compliance is unclear, request the PR description to cite the guide section(s).
 
 Correctness
