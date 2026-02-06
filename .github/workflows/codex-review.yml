@@ -1,0 +1,69 @@
+name: Codex PR Review
+
+on:
+  pull_request_target:
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  codex-review:
+    if: github.event.pull_request.author_association == 'MEMBER'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout PR merge ref
+        uses: actions/checkout@v4
+        with:
+          ref: refs/pull/${{ github.event.pull_request.number }}/merge
+
+      - name: Resolve migration guide
+        id: guide
+        shell: bash
+        run: |
+          num="${{ github.event.pull_request.milestone.number }}"
+          if [ -z "$num" ]; then
+            echo "PR has no milestone set."
+            exit 1
+          fi
+
+          matches=$(ls "docs/migrations/${num}-"*.md 2>/dev/null || true)
+          count=$(echo "$matches" | sed '/^$/d' | wc -l | tr -d ' ')
+          if [ "$count" -ne 1 ]; then
+            echo "Expected exactly one migration guide for milestone $num."
+            echo "$matches"
+            exit 1
+          fi
+
+          echo "GUIDE_PATH=$matches" >> "$GITHUB_ENV"
+
+      - name: Build Codex prompt
+        shell: bash
+        run: |
+          cat .github/codex/prompts/review.md > /tmp/codex_prompt.md
+          echo "" >> /tmp/codex_prompt.md
+          echo "Migration guide: $GUIDE_PATH" >> /tmp/codex_prompt.md
+          echo "Use that file as the primary review checklist." >> /tmp/codex_prompt.md
+
+      - name: Run Codex review
+        id: codex
+        uses: openai/codex-action@v1
+        with:
+          openai_api_key: ${{ secrets.OPENAI_API_KEY }}
+          prompt-file: /tmp/codex_prompt.md
+          sandbox: read-only
+
+      - name: Post review comment
+        uses: actions/github-script@v7
+        env:
+          REVIEW_BODY: ${{ steps.codex.outputs.final-message }}
+        with:
+          script: |
+            const body = process.env.REVIEW_BODY || 'Codex review produced no output.';
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body
+            });
