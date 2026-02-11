@@ -67,8 +67,11 @@ jobs:
         run: |
           cat .github/codex/prompts/review.md > /tmp/codex_prompt.md
           echo "" >> /tmp/codex_prompt.md
-          echo "Migration guide: $GUIDE_PATH" >> /tmp/codex_prompt.md
-          echo "Use that file as the primary review checklist." >> /tmp/codex_prompt.md
+          echo "AGENTS instructions (from HEAD):" >> /tmp/codex_prompt.md
+          cat AGENTS.md >> /tmp/codex_prompt.md
+          echo "" >> /tmp/codex_prompt.md
+          echo "Migration guide (from HEAD): $GUIDE_PATH" >> /tmp/codex_prompt.md
+          cat "$GUIDE_PATH" >> /tmp/codex_prompt.md
 
       - name: Run Codex review
         id: codex
