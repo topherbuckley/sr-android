@@ -13,6 +13,11 @@ jobs:
     if: contains(fromJSON('["MEMBER","OWNER"]'), github.event.pull_request.author_association)
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout PR merge ref
+        uses: actions/checkout@v4
+        with:
+          ref: refs/pull/${{ github.event.pull_request.number }}/merge
+
       - name: Debug workflow refs
         shell: bash
         run: |
@@ -21,11 +26,6 @@ jobs:
           echo "GITHUB_SHA=$GITHUB_SHA"
           echo "--- workflow file (first 120 lines) ---"
           sed -n '1,120p' .github/workflows/codex-review.yml
-
-      - name: Checkout PR merge ref
-        uses: actions/checkout@v4
-        with:
-          ref: refs/pull/${{ github.event.pull_request.number }}/merge
 
       - name: Resolve migration guide
         id: guide
