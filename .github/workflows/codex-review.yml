@@ -132,9 +132,8 @@ jobs:
               comments = Array.isArray(parsed.comments) ? parsed.comments : [];
 
             } catch (err) {
-              // Fall back to a summary-only review if the output isn't valid JSON.
-              comments = [];
-              event = 'REQUEST_CHANGES';
+              core.setFailed(`Codex output is not valid JSON: ${err.message}`);
+              return;
             }
 
             const reviewComments = comments
@@ -145,6 +144,10 @@ jobs:
                 side: 'RIGHT',
                 body: c.body || c.summary || c.message || 'Codex review comment.'
               }));
+
+            if (reviewComments.length === 0) {
+              event = 'APPROVE';
+            }
 
             await github.rest.pulls.createReview({
               owner: context.repo.owner,
