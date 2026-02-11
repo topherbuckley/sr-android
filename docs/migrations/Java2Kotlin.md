@@ -30,7 +30,6 @@ Each app/library migration should be done in a separate PR for clarity and revie
 
 ## Required outcomes
 - Target module(s) are 100% Kotlin (no remaining Java files).
-- No behavior changes beyond what is required to pass the build.
 
 ## Migration rules (review checks)
 - Apply Android Studio hints and suggestions that improve code quality.
@@ -63,6 +62,3 @@ lifecycleScope.launch {
 
 - State updates must continue to use `scheduleAtFixedRate`.
 - Fixed delay is only acceptable for UI updates; non-UI state/actions must use fixed rate.
-
-## Required checks
-- Build must pass.
