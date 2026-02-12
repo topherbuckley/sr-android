@@ -3,7 +3,6 @@ package jp.oist.abcvlib.basicsubscriber
 import android.graphics.Bitmap
 import android.media.AudioTimestamp
 import android.os.Bundle
-import androidx.lifecycle.lifecycleScope
 import jp.oist.abcvlib.basicsubscriber.databinding.ActivityMainBinding
 import jp.oist.abcvlib.core.AbcvlibActivity
 import jp.oist.abcvlib.core.inputs.PublisherManager
@@ -20,18 +19,17 @@ import jp.oist.abcvlib.core.inputs.phone.OrientationData
 import jp.oist.abcvlib.core.inputs.phone.OrientationDataSubscriber
 import jp.oist.abcvlib.core.inputs.phone.QRCodeData
 import jp.oist.abcvlib.core.inputs.phone.QRCodeDataSubscriber
+import jp.oist.abcvlib.util.ProcessPriorityThreadFactory
+import jp.oist.abcvlib.util.ScheduledExecutorServiceWithException
 import jp.oist.abcvlib.util.SerialCommManager
 import jp.oist.abcvlib.util.SerialReadyListener
 import jp.oist.abcvlib.util.UsbSerial
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.isActive
-import kotlinx.coroutines.launch
 import org.tensorflow.lite.support.image.TensorImage
 import org.tensorflow.lite.task.vision.detector.Detection
 import java.text.DecimalFormat
 import java.util.Locale
 import kotlin.math.roundToInt
-import kotlin.time.Duration.Companion.milliseconds
+import java.util.concurrent.TimeUnit
 
 /**
  * Most basic Android application showing connection to IOIOBoard and Android Sensors
@@ -74,12 +72,11 @@ class MainActivity : AbcvlibActivity(), SerialReadyListener, BatteryDataSubscrib
      */
     private fun initUiUpdater() {
         guiUpdater = GuiUpdater(binding)
-        lifecycleScope.launch {
-            while (isActive) {
-                guiUpdater.displayGUIValues()
-                delay(100.milliseconds)
-            }
-        }
+        val executor = ScheduledExecutorServiceWithException(
+            1,
+            ProcessPriorityThreadFactory(Thread.MIN_PRIORITY, "GuiUpdates")
+        )
+        executor.scheduleAtFixedRate(guiUpdater::displayGUIValues, 0, 100, TimeUnit.MILLISECONDS)
     }
 
     override fun onSerialReady(usbSerial: UsbSerial) {
@@ -211,7 +208,7 @@ class MainActivity : AbcvlibActivity(), SerialReadyListener, BatteryDataSubscrib
         var frameRate = 1.0 / ((System.nanoTime() - lastFrameTime) / 1000000000.0)
         lastFrameTime = System.nanoTime()
         frameRate = frameRate.roundToInt().toDouble()
-        guiUpdater.frameRateString = String.format(Locale.getDefault(), "%.0f", frameRate)
+        guiUpdater.frameRateString = String.format(Locale.JAPAN, "%.0f", frameRate)
     }
 
     override fun onQRCodeDetected(qrDataDecoded: String) {
@@ -239,4 +236,3 @@ class MainActivity : AbcvlibActivity(), SerialReadyListener, BatteryDataSubscrib
         }
     }
 }
-
