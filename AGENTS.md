@@ -2,7 +2,8 @@
 
 Scope
 - One high-level task per PR. If multiple unrelated goals appear, request a split.
-- No drive‑by changes (formatting/typos/unrelated fixes). Ask for a separate issue/PR.
+- Large formatting changes or unrelated refactors should be proposed separately.
+- Small, safe fixes (e.g. obvious typos) are fine as long as they are intentional and do not introduce changes to other parts of the project that are not included in this PR.
 
 Migration guides
 - If a PR has a milestone label, map it to `docs/migrations/NN-<Title>.md` and use that file as the review checklist.
