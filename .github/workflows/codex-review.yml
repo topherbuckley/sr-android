@@ -3,7 +3,6 @@ name: Codex PR Review
 on:
   pull_request_target:
     types: [opened, synchronize, reopened]
-  workflow_dispatch:
   issue_comment:
     types: [created]
 
